@@ -20,7 +20,7 @@ assumed that magnetorquers are perfectly aligned with body frame axes
     q_bo = sat.getQUEST()
     v_w_bo_b_m = sat.getOmega_m()
     v_b_b_m = sat.getMag_b_m()
-
+    print "mag_vec" , v_b_b_m
     N=[1,1,1]                                 #[number of turns of magnetorquer aligned with x axis of body frame, " y axis ", " z axis "]
     A=[1,1,1]                                 #[area of magnetorquer aligned with x axis of body frame, " y axis ", " z axis "]
     m_Kp = np.array([[ -1,  0,  0], 
@@ -41,5 +41,5 @@ assumed that magnetorquers are perfectly aligned with body frame axes
     v_m=(m_Kp.dot(v_e_b)+m_Ki.dot(v_ie_b)+m_Kd.dot(v_w_bo_b_m))/Bmodsq   #PID control 
     v_mControl=np.cross(v_m,v_b_b_m)                #magnetic moment to be applied
     v_I=(v_mControl/A)/N                            #[current to be applied in magnetorquer aligned with x axis of body frame," y axis ", " z axis "]
-    return np.array([1.,1.,1.])
+    return v_I
 #controlLaw([1,1,1,1],[0,0,0],[-1,0,1],1)

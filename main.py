@@ -19,12 +19,10 @@ nT = int((time_f - time_i)/dt_model)
 t1 = time.time() #to keep track of processor time
 #Orbit and environment model load
 
-v_pos_i = np.array([7e6,0.1,0.1])
-v_vel_i = np.array([7e3,0.2,0.1])
-v_mag_i = np.array([1e-5,0.1e-5,0.1e-5]) 
-v_sv_i = np.array([0.,1.,0.])
-light = 1
-
+sgp_output=np.genfromtxt('sgp_output.csv', delimiter=",")
+si_output=np.genfromtxt('si_output.csv', delimiter=",")
+light_output=np.genfromtxt('light_output.csv',delimiter=",")
+#mag_output=np.genfromtxt('mag_output.csv',delimiter=",")
 state = np.zeros((nT+1,7))
 #initial conditions attitude rates 
 v_q_BO_init = np.array([1.,0.,0.,0.])
@@ -32,6 +30,7 @@ v_w_BOB_init = np.array([0.001,0.,0.])	#in rad/sec
 state_init = np.zeros(7)
 state_init[0:4] = v_q_BO_init.copy()
 state_init[4:7] = v_w_BOB_init.copy()
+#print "state-nit" , state_init
 current = np.array([0.,0.,0.])
 duty_cycle = 0.0
 
@@ -43,15 +42,17 @@ for n in range(0,nT): #This is main loop it runs from t=0 to t=time_f
 		t2 = time.time()
 		t3 = t2 - t1
 		print "current index = ",n*dt_model, "current time = ", t3
-		#print t3		
+		print t3		
 	##------------Extracting data from model
+		
 	time_now = n*dt_model	
-	v_pos_i = np.array([7e6,0.0,0.0])#read from file 	
-	v_vel_i = np.array([0.,7e3,0.0])#read from file	
-	v_sv_i = np.array([0.,1.,0.])#read from file	
-	v_mag_i = np.array([1e-5,0.,0.])#read from file	
-	light = 1.0 #read from file
+	v_pos_i = np.array(sgp_output[1:4,n])	#read from file 	
+	v_vel_i = np.array(sgp_output[4:7,n])	#read from file	
+	v_sv_i = np.array(si_output[1:4,n])	#read from file		
+	v_mag_i = np.array([1.,1.,1.])
+	light = np.array(light_output[1,n]) #read from file
 
+	#print "state",Advitiy.getState()
 	##-------Set orbit parameters to satellite
 	
 	Advitiy.setPos(v_pos_i)
@@ -96,7 +97,7 @@ for n in range(0,nT): #This is main loop it runs from t=0 to t=time_f
 	N_fine = time_fine_loop.shape[0]
 	state_fine = np.zeros((N_fine,7))
 	state_fine[0,:] = Advitiy.getState()
-
+	state_now = state_fine[0,:]
 	##---------Loop for 0.1 sec in finer steps
 	#update control torque
 	#propagate the satellite dynamics
@@ -109,9 +110,12 @@ for n in range(0,nT): #This is main loop it runs from t=0 to t=time_f
 		curr_now = np.array([torquer_current_x[i],torquer_current_y[i],torquer_current_z[i]])
 		v_torque_control_b = control_torque(curr_now,v_mag_b)
 		#print v_torque_control_b
-		state_now = state_fine[i,:].copy()
+		#state_now = state_fine[i,:].copy()
+		#print "state_now_1",state_now
 		state_new = rk4_x(x_dot,state_now,dt_fine,v_torque_control_b,Advitiy.getDisturbance_b())
 		state_now = state_new.copy()
+		state_fine[i+1,:] = state_now.copy()
+		#print "state_now",state_now
 	
 	Advitiy.setState(state_now)	#update state add input as well
 	state[n,:] = Advitiy.getState()

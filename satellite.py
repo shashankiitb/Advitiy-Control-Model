@@ -14,6 +14,7 @@ class Satellite:
 	def setState(self,state1):	#set state
 
 		self.state = state1.copy()
+		#print self.state ,"state_set"
 
 	def getState(self):	#returns the state
 
@@ -40,7 +41,7 @@ class Satellite:
 		self.state[0:3] = q.copy()
 
 	def getQ(self):	#get exact quaternion	
-
+		#print "quat",self.state[0:4]
 		return self.state[0:4]
 
 	def getQi(self):

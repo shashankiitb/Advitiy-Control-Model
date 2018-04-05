@@ -19,8 +19,9 @@ def x_dot(x,control_Torque,Dist_torque):    #need m_INERTIA
     q_dot=0.5*np.dot(W,q)    #quaternion kinematics differential equation 
     
     x = np.zeros(7)
-    x[0:4] = q_dot
-    x[4:7] = omega_dot
+    x[0:4] = q_dot.copy()
+    
+    x[4:7] = omega_dot.copy()
     
     return x   #dimension 7x1
 #RK4 solver for x_dot function specially
@@ -32,6 +33,10 @@ def rk4_x(x_dot,x0,h,control_Torque,Dist_torque):
     k4 = h*x_dot(x0+k3, control_Torque, Dist_torque)
     x1 = x0.copy()
     x1 = x1 + (k1 + 2*k2 + 2*k3 + k4)/6
+
+    #print la.norm(x0[0:4]),la.norm(x1[0:4])
+    x1[0:4] = x1[0:4]/la.norm(x1[0:4])
+    
     return x1
 #--------------------------------------------------------------------------------------------------------------------------------
 
