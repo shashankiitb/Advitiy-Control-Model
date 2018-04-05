@@ -25,9 +25,16 @@ w0 = np.array([0.,-1*math.sqrt(G*M/R**3),0.])
 #w0 = np.array([[0.], [0.], [0.]])
 v_STATE0 = np.hstack((q0,w0))
 
+ss_error = np.array([0.01,0.01,0.01])
+mag_error = np.array([0.01,0.01,0.01])
+gyro_error = np.array([0.01,0.01,0.01])
 
+control_step = 2.0
+freq = 1e3
 
+inductance = 1e-3
+resistance = 100.0
 
-
-
-
+Ax = np.array([0.01,0.,0.])
+Ay = np.array([0.,0.02,0.])
+Az = np.array([0.,0.,0.02])

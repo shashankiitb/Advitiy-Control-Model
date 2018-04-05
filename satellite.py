@@ -11,9 +11,9 @@ class Satellite:
 		self.setState(state0)		
 		print "init"
 
-	def setState(self,state):	#set state
+	def setState(self,state1):	#set state
 
-		self.state = state.copy()
+		self.state = state1.copy()
 
 	def getState(self):	#returns the state
 
@@ -41,7 +41,7 @@ class Satellite:
 
 	def getQ(self):	#get exact quaternion	
 
-		return self.state[0:3]
+		return self.state[0:4]
 
 	def getQi(self):
 
@@ -49,10 +49,10 @@ class Satellite:
 
 	def setW(self,omega):	#set omega
 
-		self.state[4:6] = omega.copy()
+		self.state[4:7] = omega.copy()
 
 	def setTime(self,y):	#set time
-		self.time = t
+		self.time = y
 
 	def getTime(self):	#return time
 		return self.time
@@ -61,8 +61,8 @@ class Satellite:
 		self.dist_i = v_torque_dist_i.copy()
 
 	def getDisturbance_b(self):	#return disturbance in body
-		v_t_d_o = ecif2orbit(self.v_pos_i,self.v_vel_i,self.dist_i)	#@Ram
-		v_t_d_b = quatRotate(self.state[0:3],v_t_d_o)
+		v_t_d_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.dist_i)	#@Ram
+		v_t_d_b = qnv.quatRotate(self.state[0:4],v_t_d_o)
 		return v_t_d_b
 
 	def setControl_b(self,v_control_b):	#set control torque in body
@@ -71,43 +71,52 @@ class Satellite:
 	def getControl_b(self): #return control torque in body
 		return self.control_body
 
-	def setSun_i(v_sv_i):	#set sun vector in eci
+	def setSun_i(self,v_sv_i):	#set sun vector in eci
 		self.sv_i = v_sv_i.copy()	
 
-	def setMag_i(v_mag_i):	#set mag in eci
+	def setMag_i(self,v_mag_i):	#set mag in eci
 		self.mag_i = v_mag_i.copy()
 
-	def getSun_i():	#return sun in eci
+	def getSun_i(self):	#return sun in eci
 		return self.sv_i
 
-	def getMag_i():	#return mag in eci
+	def getMag_i(self):	#return mag in eci
 		return self.mag_i
 
-	def getSun_o():	#get sun vector in orbit
-		v_sv_o = ecif2orbit(self.v_pos_i,self.v_vel_i,self.sv_i)
+	def getSun_o(self):	#get sun vector in orbit
+		v_sv_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.sv_i)
 		return	v_sv_o
 
-	def getMag_o():	#return mag in orbit
-		v_mag_o = ecif2orbit(self.v_pos_i,self.v_vel_i,self.mag_i)
+	def getMag_o(self):	#return mag in orbit
+		v_mag_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.mag_i)
 		return	v_mag_o
 
-	def setSun_b_m(v_sv_b_m):	#set sunsensor measurement in body
+	def setSun_b_m(self,v_sv_b_m):	#set sunsensor measurement in body
 		self.sv_b_m = v_sv_b_m.copy()
 
-	def setMag_b_m(v_mag_b_m):	#set mag measurement in body
-		self.mag_b_m = v_mag_b_m()
+	def setMag_b_m(self,v_mag_b_m):	#set mag measurement in body
+		self.mag_b_m = v_mag_b_m.copy()
 
-	def getSun_b_m():	#return sunsensor measurement in body
+	def getSun_b_m(self):	#return sunsensor measurement in body
 		return self.sv_b_m
 
-	def getMag_b_m():	#return mag measurement in body
+	def getMag_b_m(self):	#return mag measurement in body
 		return self.mag_b_m
 
-	def setQUEST(v_q_BO_m)	#set quest quaternion
+	def setQUEST(self,v_q_BO_m):	#set quest quaternion
 		self.quatEstimate = v_q_BO_m.copy()
 
-	def getQUEST()	#return quest quaternon
+	def getQUEST(self):	#return quest quaternon
 		return self.quatEstimate
+
+	def setOmega_m(self,v_w_bob_m):
+		self.omega_m = v_w_bob_m.copy()
+
+	def getOmega_m(self):
+		return self.omega_m
+
+	def setLight(self,flag):
+		self.light = flag
 
 
 

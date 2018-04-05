@@ -2,6 +2,7 @@ import numpy as np
 from constants import *
 from math import radians, sin, cos, asin, acos, pi
 
+
 def latlon(x):
 	#get the latitude and longitude given position in ECEF
 	lat=sgn(x[2])*(acos(((x[0]**2+x[1]**2)**0.5)/((x[0]**2+x[1]**2+x[2]**2)**0.5)))*90/(pi/2) 
@@ -62,3 +63,13 @@ def ned2ecef(x,lat,lon):
 	y = np.dot(DCM,v)
 
 	return y
+
+def ecif2orbit(r,v,vector_ecif):
+    z=-r/np.linalg.norm(r)
+    y= np.cross(v,r)/np.linalg.norm(np.cross(v,r))
+    x=np.cross(y,z)
+    Rot_mat=np.array([x,y,z])
+    
+    u = np.dot(Rot_mat,vector_ecif)
+    
+    return u
