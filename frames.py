@@ -40,6 +40,18 @@ def ecif2ecef(x,t):
 	
 	return y
 
+def ecif2ecefR(today,equinox,t):
+
+	ut_sec = (today - equinox).total_seconds() + t # universal time vector in sec
+	st_sec = steprut*ut_sec   #sidereal time vector in sec
+
+	phi = st_sec*w_earth           # sidereal time vector in rad
+
+	TEI = np.array([[cos(phi),sin(phi),0],[-sin(phi),cos(phi),0],[0,0,1]])
+
+	return TEI
+
+
 def ecef2ecif(x,t):
 
 	theta = w_earth*t #in radian

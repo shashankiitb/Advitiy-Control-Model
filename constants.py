@@ -7,6 +7,7 @@ G=6.67e-11; #universal gravitational constant, SI
 M=5.972e24; #mass of earth, kg
 R=6371.8e3; #radius of earth, m
 
+steprut = 1.002738 #siderial time = stperut * universal time
 
 Ixx = .17007470856
 Iyy = .17159934710
