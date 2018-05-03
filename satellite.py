@@ -7,20 +7,19 @@ class Satellite:
 
 	def __init__(self,state0,time0):
 
-		self.time = time0
+		self.setTime(time0)
 		self.setState(state0)		
 		print "init"
 
 	def setState(self,state1):	#set state
 
 		self.state = state1.copy()
-		#print self.state ,"state_set"
 
 	def getState(self):	#returns the state
 
 		return self.state
 
-	def setPos(self,pos):	#set position in eci
+	def setPos(self,pos):	#set position in eci (earth centered inertial frame)
 
 		self.v_pos_i = pos
 
@@ -38,10 +37,9 @@ class Satellite:
 
 	def setQ(self,q):	#set exact quaternion
 
-		self.state[0:3] = q.copy()
+		self.state[0:4] = q.copy()
 
-	def getQ(self):	#get exact quaternion	
-		#print "quat",self.state[0:4]
+	def getQ(self):	#get exact quaternion
 		return self.state[0:4]
 
 	def getQi(self):
@@ -62,7 +60,7 @@ class Satellite:
 		self.dist_i = v_torque_dist_i.copy()
 
 	def getDisturbance_b(self):	#return disturbance in body
-		v_t_d_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.dist_i)	#@Ram
+		v_t_d_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.dist_i)
 		v_t_d_b = qnv.quatRotate(self.state[0:4],v_t_d_o)
 		return v_t_d_b
 
@@ -119,15 +117,11 @@ class Satellite:
 	def setLight(self,flag):
 		self.light = flag
 
-
-
-
-
-'''
 	def getW(self):
 
-		return self.state[10:13]
+		return self.state[4:7]
 
+'''
 	def getEnergy(self):
 		pos = self.getPos()
 		v = self.getVel()
