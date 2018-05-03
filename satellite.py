@@ -42,10 +42,6 @@ class Satellite:
 	def getQ(self):	#get exact quaternion
 		return self.state[0:4]
 
-	def getQi(self):
-
-		return self.qi
-
 	def setW(self,omega):	#set omega
 
 		self.state[4:7] = omega.copy()
