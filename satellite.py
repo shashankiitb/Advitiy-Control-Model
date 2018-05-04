@@ -9,7 +9,6 @@ class Satellite:
 
 		self.setTime(time0)
 		self.setState(state0)		
-		print "init"
 
 	def setState(self,state1):	#set state
 
