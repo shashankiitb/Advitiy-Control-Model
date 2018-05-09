@@ -1,6 +1,10 @@
 import numpy as np
 import math
 from cmath import *
+from dynamics import * 
+from satellite import Satellite
+from actuator import *
+
 #from satellite import Satellite
 '''
 class Satellite:
@@ -28,7 +32,7 @@ b = a
 print a,b
 b = 10
 print b,a
-'''
+
 tf = 1.0
 freq = 10.0
 curr_duty = 0.03
@@ -44,3 +48,24 @@ print tf*duty_cycle[0]/dt[0], tf*(duty_cycle[1]-duty_cycle[0])/dt[1]
 print tf*(duty_cycle[2]-duty_cycle[1])/dt[2], tf*(1.0-duty_cycle[2])/dt[3]
 
 
+
+def order(x):
+	n = 0.0
+	while (x<1.):
+		x = x*10.
+		n = n-1.
+	return 10**n
+
+y = np.array([[20.,8.,1.],[5.,6.,9.]])
+
+print np.amin(y,axis=1)
+
+'''
+
+#current_LR_PWM(tf,duty_vec,dt,duty_cycle):
+
+tf = 2.0
+my_duty = np.array([[0.2,0.3,0.5],[1.,-1.,1.]])
+dt = np.array([0.1,0.1,0.1,0.1])
+x = current_LR_PWM(tf,my_duty[:,1],dt,my_duty[0,:])
+#print x[1]

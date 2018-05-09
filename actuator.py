@@ -2,42 +2,60 @@
 import numpy as np
 import math as math
 from constants import *
+def order(x):
+	n = 0.0
+	while (x<1.):
+		x = x*10.
+		n = n-1.
+	return 10**n
 
+def duty_generate(i_control):
+	duty = np.zeros((2,3))
+	duty[0,:] = (abs(i_control)*resistance)/3.3
+	duty[1,:] = np.sign(duty[0,:])
 
-def duty_generate(i_control,R):
-    duty=(i_control*R)/3.3
-    return duty
+	return duty
 
-def internal_step_for_torquer(duty,freq):
-    #dt_h = 0.1*duty/freq 	#step size for high cycle
-    #dt_l = 0.01*(1.0-duty)/freq 	#step size for low cycle
-    dt_h = np.array([0.1,0.1,0.1])
-    dt_l = np.array([0.1,0.1,0.1])
-    dt_l=dt_l.min();
-    return np.hstack((dt_h,dt_l))
+def internal_step_for_torquer(duty):
+	dt_h = 0.1*duty[0,:]/freq 	#step size for high cycle
+	dt_h[0] = order(dt_h[0])
+	dt_h[1] = order(dt_h[1])
+	dt_h[2] = order(dt_h[2])
+	dt_l = 0.01*(1.0-duty[0,:])/freq 	#step size for low cycle
+	dt_l[0] = order(dt_l[0])
+	dt_l[1] = order(dt_l[1])
+	dt_l[2] = order(dt_l[2])
+	dt_l=dt_l.min()
+	return np.array([0.01,0.01,0.01,0.01])#np.hstack((dt_h,dt_l))
 
-#Inputs: inductance, resistance, final time, frequency, duty cycle(from 0.0 to 1.0) [all floats]
-def current_LR_PWM(tf,duty_self,dt,duty_cycle):	#Returns the tuple with [t,i] where t is from 0 to tf.
+#Inputs: final time, duty_vec[d,polarity], unsorted step sizes, duty cycle all (from 0.0 to 1.0) [all floats]
+def current_LR_PWM(tf,duty_vec,dt,duty_cycle):	#Returns the tuple with [t,i] where t is from 0 to tf.
+	freq = 1.0
 	L = inductance
 	R = resistance
-
-	V_m = 3.3
+	duty_self = duty_vec[0]
+	polarity = duty_vec[1]
+	V_m = polarity*3.3
 	T = 1.0/freq
 	tau = L/R
 
 	dt = dt[dt.argsort()[::1]]
-	#print duty_cycle
+	
 	duty_cycle = duty_cycle[duty_cycle.argsort()[::1]]
 	
 	t0 = 0.0
 	t1 = duty_cycle[0]/freq
 	t2 = duty_cycle[1]/freq
 	t3 = duty_cycle[2]/freq
-	#print duty_cycle[1]-duty_cycle[0]
-	#print duty_cycle[0]/dt[0], tf*(duty_cycle[1]-duty_cycle[0])/dt[1]
-	N = int(tf*duty_cycle[0]/dt[0]) + int(tf*(duty_cycle[1]-duty_cycle[0])/dt[1]) 
-	N = N + int(tf*(duty_cycle[2]-duty_cycle[1])/dt[2]) + int(tf*(1.0-duty_cycle[2])/dt[3]) +3
-	
+	print int(tf*duty_cycle[0]/dt[0])
+	print tf*np.array([duty_cycle[1]-duty_cycle[0]])[0]/dt[1] , 'sssssss'
+	print int(tf*np.array([duty_cycle[1]-duty_cycle[0]])[0]/dt[1])
+	print int(tf*np.array([duty_cycle[2]-duty_cycle[1]])[0]/dt[2])
+	print int(tf*np.array([1.0-duty_cycle[2]])[0]/dt[3]) 
+	N = int(tf*duty_cycle[0]/dt[0]) + int(tf*np.array([duty_cycle[1]-duty_cycle[0]])[0]/dt[1]) 
+	print N ,'1+2'
+	N = N + int(tf*np.array([duty_cycle[2]-duty_cycle[1]])[0]/dt[2]) + int(tf*np.array([1.0-duty_cycle[2]])[0]/dt[3]) + 1 
+	print N , "total N"
 	time = np.zeros(N)
 	i = np.zeros(N)
 	v = np.zeros(N)
@@ -54,10 +72,10 @@ def current_LR_PWM(tf,duty_self,dt,duty_cycle):	#Returns the tuple with [t,i] wh
 		 
 		if math.fmod(t,T) <= duty_self*T :
 			t_curr = math.fmod(t,T)
-			i[k] = (V_m/R) + (i0_h - V_m/R)*np.exp(-t_curr/tau)
-			v[k] = V_m
+			#i[k] = (V_m/R) + (i0_h - V_m/R)*np.exp(-t_curr/tau)
+			#v[k] = V_m
 			
-			i0_l = i[k] 
+			#i0_l = i[k] 
 			
 			if math.fmod(t,T) < t1:
 				t = t + dt[0]
@@ -68,14 +86,14 @@ def current_LR_PWM(tf,duty_self,dt,duty_cycle):	#Returns the tuple with [t,i] wh
 			else:
 				t = t + dt[3]
 			
-			#t = t +0.1
+			
 		else:
 			t_curr = math.fmod(t,T) - duty_self*T
-			i[k] = i0_l*np.exp(-t_curr/tau)
+			#i[k] = i0_l*np.exp(-t_curr/tau)
 			
-			v[k] = 0.0
+			#v[k] = 0.0
 			
-			i0_h = i[k]
+			#i0_h = i[k]
 			
 			if math.fmod(t,T) < t1:
 				t = t + dt[0]
@@ -86,11 +104,12 @@ def current_LR_PWM(tf,duty_self,dt,duty_cycle):	#Returns the tuple with [t,i] wh
 			else:
 				t = t + dt[3]
 			
-			#t = t+0.1
+			
 		k = k+1
-		time[k] = t
-		#print t
-	
+		#time[k] = t
+		
+	print k
+	print t,'time'
 	return time, i, v
 
 '''

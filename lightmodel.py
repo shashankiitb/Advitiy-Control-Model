@@ -7,7 +7,7 @@ AU = 159597870610.0 #Distance between sun and earth in meters
 Rsun = 695500000.0 #Radius of the Sun in meters
 sgp_output=np.genfromtxt('sgp_output.csv', delimiter=",")
 si_output=np.genfromtxt('si_output.csv', delimiter=",")
-T = sgp_output[0,:] #storing first element as time
+T = sgp_output[0,:] #storing first element as time, gives a row vector
 positionvectorarray = sgp_output[1:4,:]  #Storing the position vector of satellite given by sgp4 model
 N = len(T)
 light_output =np.empty([2,N])
