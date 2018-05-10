@@ -148,3 +148,87 @@ if flag == 1:
 	print ("all cases passed for quatMultiply")
 else:
 	print ("error for quatMultiply")
+
+flag=1 #testing for quatMultiply
+
+V = np.array([1.0,2.0,3.0])
+q = np.array([1.0,2.0,3.0,4.0])
+qi = np.array([1.0,-2.0,-3.0,-4.0])
+v = np.array([0,1.0,2.0,3.0])
+x=qnv.quatRotate(q,V)
+y=qnv.quatMultiply(v,qi)
+zq=qnv.quatMultiply(q,y)
+z=zq[1:4]
+if (x == z).all() == 0:
+	flag=0
+	
+
+V = np.array([-1.0,-2.0,3.0])
+q = np.array([-1.0,2.0,3.0,-4.0])
+qi = np.array([-1.0,-2.0,-3.0,4.0])
+v = np.array([0,-1.0,-2.0,3.0])
+x=qnv.quatRotate(q,V)
+y=qnv.quatMultiply(v,qi)
+zq=qnv.quatMultiply(q,y)
+z=zq[1:4]
+if (x == z).all() == 0:
+	flag=0
+	print (x)
+	print (z)
+
+V = np.array([1.0,-2.0,3.0])
+q = np.array([0,0,0,-1.0])
+v = np.array([0,1.0,-2.0,3.0])
+qi = np.array([0,0,0,1.0])
+x=qnv.quatRotate(q,V)
+y=qnv.quatMultiply(v,qi)
+zq=qnv.quatMultiply(q,y)
+z=zq[1:4]
+if (x == z).all() == 0:
+	flag=0
+	print (x)
+	print (z)
+
+V = np.array([1.0,-2.0,3.0])
+q = np.array([1.0,0,0,0])
+v = np.array([0,1.0,-2.0,3.0])
+qi = np.array([1.0,0,0,0])
+x=qnv.quatRotate(q,V)
+y=qnv.quatMultiply(v,qi)
+zq=qnv.quatMultiply(q,y)
+z=zq[1:4]
+if (x == z).all() == 0:
+	flag=0
+	print (x)
+	print (z)
+
+V = np.array([0,0,0])
+q = np.array([0,0,0,-1.0])
+v = np.array([0,0,0,0])
+qi = np.array([0,0,0,1.0])
+x=qnv.quatRotate(q,V)
+y=qnv.quatMultiply(v,qi)
+zq=qnv.quatMultiply(q,y)
+z=zq[1:4]
+if (x == z).all() == 0:
+	flag=0
+	print (x)
+	print (z)
+
+V = np.array([0,0,0])
+q = np.array([-1.0,0,0,0])
+v = np.array([0,0,0,0])
+qi = np.array([-1.0,0,0,0])
+x=qnv.quatRotate(q,V)
+y=qnv.quatMultiply(v,qi)
+zq=qnv.quatMultiply(q,y)
+z=zq[1:4]
+if (x == z).all() == 0:
+	flag=0
+	print (x)
+	print (z)
+
+if flag == 1:
+	print ("all cases passed for quatRotate")
+else:
+	print ("error for quatRotate")
