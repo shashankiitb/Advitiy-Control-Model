@@ -1,37 +1,24 @@
 import numpy as np
 import math
 
-def dot1(v1,v2):
-	v3 = v1.reshape((3,))
-	v4 = v2.reshape((3,))
-	v5 = np.dot(v3,v4)
-		
+def dot(v1,v2): #returns dot product of 2 row vectors
+
+	v5 = np.dot(v1,v2)		
 	return v5
 
-def cross1(v1,v2):
-	#for cross product of 2 column vectors
+def cross(v1,v2): #returns cross product of 2 row vectors
 
-	v3 = v1.reshape((1,3))
-	v4 = v2.reshape((1,3))
-	v5 = np.cross(v3,v4)
-	v6 = v5.reshape((3,1))
-	return v6
+	v5 = np.cross(v1,v2)
+	return v5
 
 
-def quatInv(q1):
-	#to get inverse of a quaternion
-	#print q
-	#qi = np.hstack((q[0:1],-1*q[1:4]))
+def quatInv(q1): #to get inverse of a quaternion
 	qi = np.zeros(4)
 	qi[0] = q1[0]
 	qi[1:4] = -1*q1[1:4].copy()
-
 	return qi
 
-
-def quatMultiply(q1,q2):
-
-	#quaternion is scalar, vector. function multiplies 2 quaternions
+def quatMultiply(q1,q2): #returns normalized quaternion product
 
 	a1 = q1[0:1].copy()
 	a2 = q2[0:1].copy()
@@ -41,26 +28,17 @@ def quatMultiply(q1,q2):
 	
 	a = a1*a2 - np.dot(b1,b2)
 	b = a1*b2 + a2*b1 + np.cross(b1,b2)
-
-	#b = b.reshape((1,3))
-
 	q = np.hstack((a,b))
-	q = q/np.linalg.norm(q)
+	if np.count_nonzero(q) != 0: #to check if quaternion is an empty array
+		q = q/np.linalg.norm(q)
 	return q
 
-def quatRotate(q,x):
+def quatRotate(q,x): #rotates vecctor x by quaternion q
 	
-	#rotates vecctor x by quaternion q
-	#M = np.array([[q[0]**2 + q[1]**2 - q[2]**2 - q[3]**2,2*]])
-	
-	qi = np.zeros(4)
-
-	qi[0] = q[0].copy()
-	qi[1:4] = -1*q[1:4].copy()
+	qi = qnv.quatInv(q)
 	y = np.hstack(([0.],x.copy()))
 	y = quatMultiply(q,y)
 	y = quatMultiply(y,qi)
-
 	x2 = y[1:4]
 	return x2
 
@@ -111,20 +89,21 @@ def rotm2quat(A):
 	q = q/np.linalg.norm(q)
 	
 	return q
-
-def quat2rotm(q):
+'''
+def quat2rotm(q): #given a quaternion it returns a rotation matrix
 	q1 = q[1]
 	q2 = q[2]
 	q3 = q[3]
 	q0 = q[0]
 
-	M1 = np.array([[-q2**2 - q3**2,q1*q2,q1*q3],[q1*q2,-q1**2 - q3**2,q2*q3],[q1*q3,q2*q3,-q1**2-q2**2]])
-	M2 = 2*q0*np.array([[0,-q3,q2],[q3,0,-q1],[-q2,q1,0]])
+	M1 = 2* np.array([[-q2**2 - q3**2,q1*q2,q1*q3],[q1*q2,-q1**2 - q3**2,q2*q3],[q1*q3,q2*q3,-q1**2-q2**2]])
+	M2 = -2*q0*np.array([[0,-q3,q2],[q3,0,-q1],[-q2,q1,0]])
 	M3 = np.identity(3)
 	return M1 + M2 + M3
+
+'''
 def skew(v):
-	#print v
-	return np.array([[0,-v[2],v[1]],[v[2],0,-v[0]],[-v[2],v[0],0]])
+	return np.array([[0,-v[2],v[1]],[v[2],0,-v[0]],[-v[1],v[0],0]])
 
 def theta2J(t):
 	t1 = t[0]
@@ -134,3 +113,4 @@ def theta2J(t):
 	t5 = t[4]
 	t6 = t[5]
 	return np.array([[t1,t2,t3],[t2,t4,t5],[t3,t5,t6]])
+'''
