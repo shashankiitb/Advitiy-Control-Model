@@ -18,7 +18,7 @@ def quatInv(q1): #to get inverse of a quaternion
 	qi[1:4] = -1*q1[1:4].copy()
 	return qi
 
-def quatMultiply(q1,q2): #returns normalized quaternion product
+def quatMultiply(q1,q2): #returns quaternion product (product is not a unit quaternion)
 
 	a1 = q1[0:1].copy()
 	a2 = q2[0:1].copy()
@@ -29,8 +29,6 @@ def quatMultiply(q1,q2): #returns normalized quaternion product
 	a = a1*a2 - np.dot(b1,b2)
 	b = a1*b2 + a2*b1 + np.cross(b1,b2)
 	q = np.hstack((a,b))
-	if np.count_nonzero(q) != 0: #to check if quaternion is an empty array
-		q = q/np.linalg.norm(q)
 	return q
 
 def quatRotate(q,x): #rotates vecctor x by quaternion q
