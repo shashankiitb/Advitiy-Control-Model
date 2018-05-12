@@ -11,9 +11,21 @@ class Testquatrotate(unittest.TestCase):
 		  v=np.asarray(value[0])
 		  q=np.asarray(value[1])
 		  vr=np.asarray(value[2])
-		  A=qnv.quatRotate(q,v)
-		  
+		  A=qnv.quatRotate(q,v)		  
 		  self.assertTrue(np.allclose(A,vr))
+
+
+@ddt
+class Testquatder(unittest.TestCase):
+	@file_data("test_quatder.json")
+	@unpack
+	def test_quatder(self,value):
+		  w=np.asarray(value[1])
+		  q=np.asarray(value[0])
+		  wdot=np.asarray(value[2])
+		  A=qnv.quatRotate(q,w)
+		  self.assertTrue(np.allclose(A,wdot))
+
 @ddt
 class Testquatrotm(unittest.TestCase):
 	@file_data('test_quatrotm.json')
@@ -23,11 +35,23 @@ class Testquatrotm(unittest.TestCase):
 	        m1=np.asarray(value[1])
 	        m2=np.asarray(value[2])
 	        m3=np.asarray(value[3])
-	        A=qnv.quat2rotm	        
+	        A=qnv.quat2rotm(q)	        
 	        self.assertTrue(np.allclose(A[0,:],m1))
 	        self.assertTrue(np.allclose(A[1,:],m2))
 	        self.assertTrue(np.allclose(A[2,:],m3))
 	    	
+@ddt
+class Testrotmquat(unittest.TestCase):
+	@file_data("test_rotmquat.json")
+	@unpack
+	def test_rotm2quat(self,value):
+	        q=np.asarray(value[0])
+	        m1=np.asarray(value[1])
+	        m2=np.asarray(value[2])
+	        m3=np.asarray(value[3])
+	        A=np.asmatrix([m1, m2, m3])
+	        qo=qnv.quat2rotm(A)	 
+	        self.assertTrue(np.allclose(qo,q))       
 
 if __name__=='__main__':
 	unittest.main(verbosity=2)
