@@ -1,17 +1,17 @@
 #import statements
 from satellite import Satellite
-import numpy as np
-import math as math
-import controller as ctrl
-from actuator import *
-from dynamics import *
-from sensor import *
-from estimator import *
-import time
-from qnv import quatRotate
-from constants import *
+import numpy as np 
+import math as math 
+import controller as ctrl 
+from actuator import * 
+from dynamics import * 
+from sensor import * 
+from estimator import * 
+import time 
+from qnv import quatRotate 
+from constants import * 
 
-time_f = 10.0	#in seconds
+time_f = 0.3	#in seconds
 time_now = 0.0
 time_i = 0.0
 dt_model = 0.1	#step size used in model
@@ -87,13 +87,14 @@ for n in range(0,nT): #This is main loop it runs from t=0 to t=time_f
 	if(math.fmod(time_now,control_step) == 0):
 		current = ctrl.controlLaw(Advitiy,control_step)
 		
-	duty_cycle = duty_generate(current,R)
-	dt = internal_step_for_torquer(duty_cycle,freq)
+	duty_cycle = duty_generate(current)	#2*3 array first row has three duty cycles second row has polarities
+	dt = internal_step_for_torquer(duty_cycle)
 	#print time_now,current
-	torquer_current_x = current_LR_PWM(dt_model,duty_cycle[0],dt,duty_cycle)[1]
-	torquer_current_y = current_LR_PWM(dt_model,duty_cycle[0],dt,duty_cycle)[1]
-	torquer_current_z = current_LR_PWM(dt_model,duty_cycle[0],dt,duty_cycle)[1]
-	time_fine_loop = current_LR_PWM(dt_model,duty_cycle[0],dt,duty_cycle)[0]
+	print "sanket",duty_cycle[0,:]
+	torquer_current_x = current_LR_PWM(dt_model,duty_cycle[:,0],dt,duty_cycle[0,:])[1]
+	torquer_current_y = current_LR_PWM(dt_model,duty_cycle[:,1],dt,duty_cycle[0,:])[1]
+	torquer_current_z = current_LR_PWM(dt_model,duty_cycle[:,2],dt,duty_cycle[0,:])[1]
+	time_fine_loop = current_LR_PWM(dt_model,duty_cycle[:,0],dt,duty_cycle[0,:])[0]
 	N_fine = time_fine_loop.shape[0]
 	state_fine = np.zeros((N_fine,7))
 	state_fine[0,:] = Advitiy.getState()
