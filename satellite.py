@@ -20,7 +20,7 @@ class Satellite:
 
 	def setPos(self,pos):	#set position in eci (earth centered inertial frame)
 
-		self.v_pos_i = pos
+		self.v_pos_i = pos.copy()
 
 	def getPos(self):	#return position in eci
 
@@ -28,7 +28,7 @@ class Satellite:
 
 	def setVel(self,vel):	#set velocity in eci
 
-		self.v_vel_i = vel
+		self.v_vel_i = vel.copy()
 
 	def getVel(self):	#get velocity in eci
 
@@ -115,21 +115,3 @@ class Satellite:
 	def getW(self):
 
 		return self.state[4:7]
-
-'''
-	def getEnergy(self):
-		pos = self.getPos()
-		v = self.getVel()
-		omega = self.getW()
-		T = 0.5*Ms*(np.linalg.norm(v))**2 - G*M*(Ms + mu_m*L/(np.linalg.norm(pos)) + 0.5*np.dot(omega, np.matmul(m_Inertia,omega)))
-
-	def setEmf(self,e):
-
-		self.emf = e
-
-	def getEmf(self):
-		
-		return self.emf
-
-	
-'''
