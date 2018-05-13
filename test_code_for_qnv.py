@@ -44,32 +44,31 @@ else:
 	print ("error for dot")
 
 flag=1 #to check for cross
-cross=np.array([0,0,0])
 
 G=qnv.cross(A,A)
-if (G == cross).all() == 0:
+if (G == F).all() == 0:
 	flag=0
 
 G=qnv.cross(A,B)
-if (G == cross).all() == 0:
+if (G == F).all() == 0:
 	flag=0
 
 G=qnv.cross(D,F)
-if (G == cross).all() == 0:
+if (G == F).all() == 0:
 	flag=0
 
 G=qnv.cross(D,F)
-if (G == cross).all() == 0:
+if (G == F).all() == 0:
 	flag=0
 
 G=qnv.cross(C,D)
-cross[0:3]=[-32,-19,2]
-if (G == cross).all() == 0:
+expected_cross=np.array([-32,-19,2])
+if (G == expected_cross).all() == 0:
 	flag=0
 
 G=qnv.cross(E,A)
-cross[0:3]=[-13,2,3]
-if (G == cross).all() == 0:
+expected_cross[0:3]=[-13,2,3]
+if (G == expected_cross).all() == 0:
 	flag=0
 
 if flag == 1:
