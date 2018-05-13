@@ -32,7 +32,7 @@ def quatMultiplynorm(q1,q2): #returns quaternion product (product is a unit quat
 	q = q/np.linalg.norm(q)
 	return q
 
-def quatMultiplyunnorm(q1,q2): #returns quaternion product (product is not a unit quaternion)
+def quatMultiplyUnnorm(q1,q2): #returns quaternion product (product is not a unit quaternion)
 
 	a1 = q1[0:1].copy()
 	a2 = q2[0:1].copy()
@@ -56,7 +56,7 @@ def quatRotate(q,x): #rotates vecctor x by quaternion q
 	x2 = y[1:4]
 	return x2
 
-def quatDer1(q,w): #if w is in body frame, q takes from body to inertial
+def quatDer1(q,w): # w is angular velocity of body wrt inertial frame in body frame. q transforms inertial frame vector to body frame
 	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,w[2],-w[1]],[w[1],-w[2],0,w[0]],[w[2],w[1],-w[0],0]])
 	q_dot = 0.5*np.dot(W,q)
 
@@ -70,36 +70,36 @@ def quatDer2(q,w): #if w is in inertial frame, q takes from body to inertial
 '''
 def rotm2quat(A): #returns a quaternion whose scalar part is positive to keep angle between -180 to +180 deg.
 
-	q1 = 1 + np.trace(A)
-	q2 = 1 + A[0,0] - A[1,1] - A[2,2]
-	q3 = 1 - A[0,0] + A[1,1] - A[2,2]
-	q4 = 1 - A[0,0] - A[1,1] + A[2,2]
-	qm = max(q1,q2,q3,q4)
-	if(qm==q1):
+	q0 = 1 + np.trace(A)
+	q1 = 1 + A[0,0] - A[1,1] - A[2,2]
+	q2 = 1 - A[0,0] + A[1,1] - A[2,2]
+	q3 = 1 - A[0,0] - A[1,1] + A[2,2]
+	qm = max(q0,q1,q2,q3)
+	if(qm==q0):
+		q0 = math.sqrt(q0)/2
+		q1 = (A[1,2] - A[2,1])/(4*q0)
+		q2 = (A[2,0] - A[0,2])/(4*q0)
+		q3 = (A[0,1] - A[1,0])/(4*q0)
+
+	elif(qm==q1):
 		q1 = math.sqrt(q1)/2
-		q2 = (A[1,2] - A[2,1])/(4*q1)
-		q3 = (A[2,0] - A[0,2])/(4*q1)
-		q4 = (A[0,1] - A[1,0])/(4*q1)
+		q0 = (A[1,2] - A[2,1])/(4*q1)
+		q2 = (A[0,1] + A[1,0])/(4*q1)
+		q3 = (A[0,2] + A[2,0])/(4*q1)
 
 	elif(qm==q2):
 		q2 = math.sqrt(q2)/2
-		q1 = (A[1,2] - A[2,1])/(4*q2)
-		q3 = (A[0,1] + A[1,0])/(4*q2)
-		q4 = (A[0,2] + A[2,0])/(4*q2)
-
-	elif(qm==q3):
-		q3 = math.sqrt(q3)/2
-		q1 = (A[2,0] - A[0,2])/(4*q3)
-		q2 = (A[0,1] + A[1,0])/(4*q3)
-		q4 = (A[1,2] + A[2,1])/(4*q3)
+		q0 = (A[2,0] - A[0,2])/(4*q2)
+		q1 = (A[0,1] + A[1,0])/(4*q2)
+		q3 = (A[1,2] + A[2,1])/(4*q2)
 
 	else: 
-		q4 = math.sqrt(q4)/2
-		q1 = (A[0,1] - A[1,0])/(4*q4)
-		q2 = (A[0,2] + A[2,0])/(4*q4)
-		q3 = (A[1,2] + A[2,1])/(4*q4)
+		q3 = math.sqrt(q3)/2
+		q0 = (A[0,1] - A[1,0])/(4*q3)
+		q1 = (A[0,2] + A[2,0])/(4*q3)
+		q2 = (A[1,2] + A[2,1])/(4*q3)
 
-	q = np.array([q1,q2,q3,q4])
+	q = np.array([q0,q1,q2,q3])
 	q = q/np.linalg.norm(q)
 	
 	return q
