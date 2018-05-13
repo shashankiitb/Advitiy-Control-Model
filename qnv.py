@@ -40,8 +40,8 @@ def quatRotate(q,x): #rotates vecctor x by quaternion q
 		return x
 	qi = quatInv(q)
 	y = np.hstack(([0.],x.copy()))
-	y = quatMultiplyunnorm(q,y)
-	y = quatMultiplyunnorm(y,qi)
+	y = quatMultiplyUnnorm(q,y)
+	y = quatMultiplyUnnorm(y,qi)
 	x2 = y[1:4]
 	return x2
 

@@ -77,23 +77,23 @@ else:
 
 flag=1 # testing for quatMultiplynorm
 
-G=qnv.quatMultiplyunnorm(m1,m2)
+G=qnv.quatMultiplyUnnorm(m1,m2)
 if (G == m6).all() == 0:
 	flag=0
 
-G=qnv.quatMultiplyunnorm(m3,m2)
+G=qnv.quatMultiplyUnnorm(m3,m2)
 if (G == m7).all() == 0:
 	flag=0
 
-G=qnv.quatMultiplyunnorm(m4,m5)
+G=qnv.quatMultiplyUnnorm(m4,m5)
 if (G == m8).all() == 0:
 	flag=0
 
-G=qnv.quatMultiplyunnorm(q9,q9)
+G=qnv.quatMultiplyUnnorm(q9,q9)
 if (G == q9).all() == 0:
 	flag=0
 
 if flag == 1:
-	print ("all cases passed for quatMultiplyunnorm")
+	print ("all cases passed for quatMultiplyUnnorm")
 else:
-	print ("error for quatMultiplyunnorm")
+	print ("error for quatMultiplyUnnorm")
