@@ -1,17 +1,6 @@
 import numpy as np
 import math
 
-def dot(v1,v2): #returns dot product of 2 row vectors
-
-	v5 = np.dot(v1,v2)		
-	return v5
-
-def cross(v1,v2): #returns cross product of 2 row vectors
-
-	v5 = np.cross(v1,v2)
-	return v5
-
-
 def quatInv(q1): #to get inverse of a quaternion
 	qi = np.zeros(4)
 	qi[0] = q1[0]
