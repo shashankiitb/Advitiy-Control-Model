@@ -3,7 +3,7 @@ import unittest	#testing library
 import numpy as np
 from ddt import ddt,file_data,unpack,data
 from math import sin,cos
-from constants_1U import W_EARTH, LAUNCHDAY, EQUINOX
+from constants_1U import W_EARTH, LAUNCHDATE, EQUINOX
 
 @ddt
 class TestLatLon(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestLatLon(unittest.TestCase):
 class TestEcif2Ecef(unittest.TestCase):
 	@data(100.0,210.,323.0,452.0,580.90)
 	def test_orthogonality_of_matrix(self,value):	#Test to check that the rotation matrix is orthogonal
-		t = (LAUNCHDAY - EQUINOX).total_seconds() + value
+		t = (LAUNCHDATE - EQUINOX).total_seconds() + value
 
 		v_x = fr.ecif2ecef(np.array([1.0,0.0,0.0]),t)
 		v_y = fr.ecif2ecef(np.array([0.0,1.0,0.0]),t)
@@ -46,7 +46,7 @@ class TestEcif2Ecef(unittest.TestCase):
 		self.assertTrue(np.allclose(I[2,:],[0.,0.,1.]))
 
 	def test_at_zero_time(self):	#Test when ecef and ecif are aligned
-		t = (EQUINOX - LAUNCHDAY).total_seconds()	
+		t = (EQUINOX - LAUNCHDATE).total_seconds()	
 		u = np.array([5.0e3,-2.30e3,-5.89e3])
 		v = fr.ecif2ecef(u,t)
 		self.assertTrue(np.allclose(v,u))
@@ -65,7 +65,7 @@ class TestEcif2Ecef(unittest.TestCase):
 		t = 12.63e3
 		u = np.asarray(value)
 		result = fr.ecif2ecef(u,t)
-		t = t + (LAUNCHDAY - EQUINOX).total_seconds() 
+		t = t + (LAUNCHDATE - EQUINOX).total_seconds() 
 		v = np.array([cos(W_EARTH*t)*value[0]+sin(W_EARTH*t)*value[1],cos(W_EARTH*t)*value[1]-sin(W_EARTH*t)*value[0],value[2]])
 		self.assertTrue(np.allclose(result,v))
 
@@ -78,7 +78,7 @@ class TestEcef2Ecif(unittest.TestCase):
 		u = np.asarray(value)
 		result = fr.ecef2ecif(u,t)
 		self.assertTrue(type(result),np.ndarray)
-		t = t + (LAUNCHDAY - EQUINOX).total_seconds() 
+		t = t + (LAUNCHDATE - EQUINOX).total_seconds() 
 		v = np.array([cos(W_EARTH*t)*value[0]-sin(W_EARTH*t)*value[1],cos(W_EARTH*t)*value[1]+sin(W_EARTH*t)*value[0],value[2]])
 		self.assertTrue(np.allclose(result,v))
 
