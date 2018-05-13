@@ -30,7 +30,6 @@ def quatInv(q1):
 
 
 def quatMultiply(q1,q2):
-
 	#quaternion is scalar, vector. function multiplies 2 quaternions
 
 	a1 = q1[0:1].copy()
@@ -45,33 +44,36 @@ def quatMultiply(q1,q2):
 	#b = b.reshape((1,3))
 
 	q = np.hstack((a,b))
-	q = q/np.linalg.norm(q)
+	
+	#q = q/np.linalg.norm(q)
 	return q
 
 def quatRotate(q,x):
 	
 	#rotates vecctor x by quaternion q
 	#M = np.array([[q[0]**2 + q[1]**2 - q[2]**2 - q[3]**2,2*]])
+	if 	np.array_equal(x,np.array([0,0,0])):
+		x2 = np.array([0.,0.,0.])
+	else:
+		qi = np.zeros(4)
+		qi[0] = q[0].copy()
+		qi[1:4] = -1*q[1:4].copy()
+		y = np.hstack(([0.],x.copy()))
+		y = quatMultiply(q,y)
+		y = quatMultiply(y,qi)
+
+		x2 = y[1:4]	
 	
-	qi = np.zeros(4)
-
-	qi[0] = q[0].copy()
-	qi[1:4] = -1*q[1:4].copy()
-	y = np.hstack(([0.],x.copy()))
-	y = quatMultiply(q,y)
-	y = quatMultiply(y,qi)
-
-	x2 = y[1:4]
 	return x2
 
 def quatDer1(q,w): #if w is in body frame, q takes from body to inertial
-	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,w[2],-w[1]],[w[1],-w[2],0,w[0]],[w[2],w[1],-w[1],0]])
+	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,w[2],-w[1]],[w[1],-w[2],0,w[0]],[w[2],w[1],-w[0],0]])
 	q_dot = 0.5*np.dot(W,q)
 
 	return q_dot
 
 def quatDer2(q,w): #if w is in inertial frame, q takes from body to inertial
-	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,-w[2],w[1]],[w[1],w[2],0,-w[0]],[w[2],-w[1],w[1],0]])
+	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,-w[2],w[1]],[w[1],w[2],0,-w[0]],[w[2],-w[1],w[0],0]])
 	q_dot = 0.5*np.dot(W,q)
 
 	return q_dot

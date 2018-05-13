@@ -1,4 +1,4 @@
-from constants import *
+from constants_1U import *
 import numpy as np
 import qnv
 import frames as fs
@@ -58,13 +58,11 @@ class Satellite:
 	def getTime(self):	#return time
 		return self.time
 
-	def setDisturbance_i(self,v_torque_dist_i):	#set disturbance in eci
-		self.dist_i = v_torque_dist_i.copy()
+	def setDisturbance_b(self,v_torque_dist_b):	#set disturbance in body
+		self.dist_b = v_torque_dist_b.copy()
 
 	def getDisturbance_b(self):	#return disturbance in body
-		v_t_d_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.dist_i)	#@Ram
-		v_t_d_b = qnv.quatRotate(self.state[0:4],v_t_d_o)
-		return v_t_d_b
+		return self.dist_b
 
 	def setControl_b(self,v_control_b):	#set control torque in body
 		self.control_body = v_control_b.copy()
