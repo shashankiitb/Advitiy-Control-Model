@@ -55,13 +55,9 @@ class Satellite:
 		self.dist_b = v_torque_dist_b.copy()
 
 	def getDisturbance_b(self):	#return disturbance in body
-<<<<<<< HEAD
+
 		return self.dist_b
-=======
-		v_t_d_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.dist_i)
-		v_t_d_b = qnv.quatRotate(self.state[0:4],v_t_d_o)
-		return v_t_d_b
->>>>>>> 6750e09555eb2dff9eac0b318fd627503d713511
+
 
 	def setControl_b(self,v_control_b):	#set control torque in body
 		self.control_body = v_control_b.copy()

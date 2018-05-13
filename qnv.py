@@ -7,13 +7,7 @@ def quatInv(q1): #to get inverse of a quaternion
 	qi[1:4] = -1*q1[1:4].copy()
 	return qi
 
-<<<<<<< HEAD
-
-def quatMultiply(q1,q2):
-	#quaternion is scalar, vector. function multiplies 2 quaternions
-=======
 def quatMultiplynorm(q1,q2): #returns quaternion product (product is a unit quaternion)
->>>>>>> 6750e09555eb2dff9eac0b318fd627503d713511
 
 	a1 = q1[0:1].copy()
 	a2 = q2[0:1].copy()
@@ -25,7 +19,7 @@ def quatMultiplynorm(q1,q2): #returns quaternion product (product is a unit quat
 	b = a1*b2 + a2*b1 + np.cross(b1,b2)
 	q = np.hstack((a,b))
 	
-	#q = q/np.linalg.norm(q)
+	q = q/np.linalg.norm(q)
 	return q
 
 def quatMultiplyUnnorm(q1,q2): #returns quaternion product (product is not a unit quaternion)
@@ -33,25 +27,7 @@ def quatMultiplyUnnorm(q1,q2): #returns quaternion product (product is not a uni
 	a1 = q1[0:1].copy()
 	a2 = q2[0:1].copy()
 	
-<<<<<<< HEAD
-	#rotates vecctor x by quaternion q
-	#M = np.array([[q[0]**2 + q[1]**2 - q[2]**2 - q[3]**2,2*]])
-	if 	np.array_equal(x,np.array([0,0,0])):
-		x2 = np.array([0.,0.,0.])
-	else:
-		qi = np.zeros(4)
-		qi[0] = q[0].copy()
-		qi[1:4] = -1*q[1:4].copy()
-		y = np.hstack(([0.],x.copy()))
-		y = quatMultiply(q,y)
-		y = quatMultiply(y,qi)
 
-		x2 = y[1:4]	
-	
-	return x2
-
-def quatDer1(q,w): #if w is in body frame, q takes from body to inertial
-=======
 	b1 = (q1[1:4].copy())
 	b2 = (q2[1:4].copy())
 	
@@ -72,7 +48,7 @@ def quatRotate(q,x): #rotates vecctor x by quaternion q
 	return x2
 
 def quatDer1(q,w): # w is angular velocity of body wrt inertial frame in body frame. q transforms inertial frame vector to body frame
->>>>>>> 6750e09555eb2dff9eac0b318fd627503d713511
+
 	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,w[2],-w[1]],[w[1],-w[2],0,w[0]],[w[2],w[1],-w[0],0]])
 	q_dot = 0.5*np.dot(W,q)
 
