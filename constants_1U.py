@@ -10,6 +10,8 @@ G = 6.67408e-11; #universal gravitational constant, SI
 M_EARTH = 5.972e24; #mass of earth, kg
 R_EARTH = 6371.0e3; #radius of earth, m
 
+v_w_IOO = np.array([0., np.sqrt(G*M_EARTH/R_EARTH**3), 0.]) #w of ecif wrt orbit in orbit frame
+
 #------------date format yyyy,mm,dd
 LINE1 = ('1 41783U 16059A   18093.17383152  .00000069  00000-0  22905-4 0  9992') #Insert TLE Here
 LINE2 = ('2 41783  98.1258 155.9141 0032873 333.2318  26.7186 14.62910114 80995') 
@@ -56,7 +58,7 @@ RESISTANCE = 100.0	#Resistance of torquer	in Ohm
 #Disturbance model constants
 SOLAR_PRESSURE = 4.56e-6	#in N/m^2
 REFLECTIVITY = 0.2
-r_COM = np.array([5e-3,5e-3,5e-3])
+r_COM = np.array([-0.067e-2,-0.58e-2,-0.067e-2])
 
-AERO_DRAG = 1.5
+AERO_DRAG = 2.2
 RHO = 0.218e-12
