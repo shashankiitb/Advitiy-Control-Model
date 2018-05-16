@@ -11,7 +11,7 @@ def x_dot(sat,t,x):    #need m_INERTIA
     v_torque_control_b = sat.getControl_b()     #Control torque
     v_torque_dist_b = sat.getDisturbance_b()    #Disturbance torque
     v_torque_b = v_torque_control_b + v_torque_dist_b
-
+    
     #get current state
     v_state = x.copy()
     v_q_BI = v_state[0:4].copy()   #unit quaternion rotating from ecif to body 
