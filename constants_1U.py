@@ -2,7 +2,7 @@
 
 import numpy as np
 import datetime as dt
-from math import sqrt
+from math import sqrt, sin, radians
 
 #--------Earth and environment
 W_EARTH = 7.2921150e-5; # rotation velocity of the earth (rad per second)
@@ -15,11 +15,11 @@ v_w_IOO = np.array([0., np.sqrt(G*M_EARTH/R_EARTH**3), 0.]) #w of ecif wrt orbit
 #------------date format yyyy,mm,dd
 LINE1 = ('1 41783U 16059A   18093.17383152  .00000069  00000-0  22905-4 0  9992') #Insert TLE Here
 LINE2 = ('2 41783  98.1258 155.9141 0032873 333.2318  26.7186 14.62910114 80995') 
-
+Inclination = 98.1258
 LAUNCHDATE = dt.datetime(2018, 4, 03, 12, 50, 19)	#date of launch t=0
 EQUINOX = dt.datetime(2018, 3, 20, 13, 05, 00)	#day of equinox
 steprut = 1.002738 #siderial time = stperut * universal time
-
+TimePeriod = 86400/14.62910114
 #-- --------Moment of inertia matrix in kgm^2 for 1U satellite (assumed to be uniform with small off-diagonal)
 MASS_SAT = 0.850	#in kg
 
@@ -29,7 +29,7 @@ Izz = 0.0011
 Ixy = -6.39e-6
 Iyz = -2.16e-5
 Ixz = -5.386e-6
-
+Imin = min(Ixx, Iyy, Izz, Ixy, Iyz, Ixz)
 m_INERTIA = np.array([[Ixx, Ixy, Ixz], [Ixy, Iyy, Iyz], [Ixz, Iyz, Izz]])
 m_INERTIA_inv = np.linalg.inv(m_INERTIA)	#inverse of inertia matrix
 
@@ -62,3 +62,5 @@ r_COM = np.array([-0.067e-2,-0.58e-2,-0.067e-2])
 
 AERO_DRAG = 2.2
 RHO = 0.218e-12
+
+k = 4*np.pi*(1+sin(radians(Inclination)))*Imin/TimePeriod  #gain constant in B_dot controller
