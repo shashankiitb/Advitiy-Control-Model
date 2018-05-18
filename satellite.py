@@ -112,6 +112,9 @@ class Satellite:
 	def setLight(self,flag):
 		self.light = flag
 
+	def getLight(self):
+		return self.light
+
 	def getW(self):
 
 		return self.state[4:7]
