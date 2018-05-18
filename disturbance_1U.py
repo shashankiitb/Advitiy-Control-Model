@@ -54,7 +54,7 @@ def aero_torque(s):
    
     l = constants.Lx  # length of cube 
     area = l * l * (abs(v_vel_b[0]) + abs(v_vel_b[1]) + abs(v_vel_b[2]))  # area of satellite perpendicular to velocity
-    v_t_ad_b = np.cross(r_com, v_vel_b) * rho * cd * vel_norm * area / 2.
+    v_t_ad_b = np.cross(r_com, v_vel_b) * rho * cd  * area / 2.
 
     return v_t_ad_b
 
@@ -70,20 +70,24 @@ this function takes input:
 
 
 def solar_torque(s):
-    q = s.getQ()
-   
-    r_com = constants.r_COM
-    e = constants.REFLECTIVITY  # coefficient of reflectivity of satellite
-    p = constants.SOLAR_PRESSURE  # solar radiation pressure at low earth orbit
-    v_sv_i = s.getSun_i()  # unit sun vector in inertial frame obtained from satellite object
-    v_sv_b_u = qnv.quatRotate(q, v_sv_i) / np.linalg.norm(v_sv_i)
+    if s.getLight() == 0:
+        v_t_sd_b = np.array([0.,0.,0.])
+    else:
 
-    l = constants.Lx
-    area = l * l * (abs(v_sv_b_u[0]) + abs(v_sv_b_u[1]) + abs(v_sv_b_u[2]))
-    # area of satellite perpendicular to sun vector
-    v_t_sd1_b = np.cross(r_com, v_sv_b_u) * p * (1 - e) * area  # torque due to absorption
-    v_t_sd2_b = np.cross(r_com, [abs(v_sv_b_u[0]) * v_sv_b_u[0], abs(v_sv_b_u[1]) * v_sv_b_u[1], abs(v_sv_b_u[2]) * v_sv_b_u[2]]) * 2 * e * p * l * l
-    # reflection torque
-    v_t_sd_b = v_t_sd1_b + v_t_sd2_b
+        q = s.getQ()
+    
+        r_com = constants.r_COM
+        e = constants.REFLECTIVITY  # coefficient of reflectivity of satellite  
+        p = constants.SOLAR_PRESSURE  # solar radiation pressure at low earth orbit
+        v_sv_i = s.getSun_i()  # unit sun vector in inertial frame obtained from satellite object
+        v_sv_b_u = qnv.quatRotate(q, v_sv_i) / np.linalg.norm(v_sv_i)
+
+        l = constants.Lx
+        area = l * l * (abs(v_sv_b_u[0]) + abs(v_sv_b_u[1]) + abs(v_sv_b_u[2]))
+        # area of satellite perpendicular to sun vector
+        v_t_sd1_b = np.cross(r_com, v_sv_b_u) * p * (1 - e) * area  # torque due to absorption
+        v_t_sd2_b = np.cross(r_com, [abs(v_sv_b_u[0]) * v_sv_b_u[0], abs(v_sv_b_u[1]) * v_sv_b_u[1], abs(v_sv_b_u[2]) * v_sv_b_u[2]]) * 2 * e * p * l * l
+        # reflection torque
+        v_t_sd_b = v_t_sd1_b + v_t_sd2_b
 
     return v_t_sd_b
