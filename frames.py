@@ -1,7 +1,7 @@
 #Code for transformation of vector from one reference frame to another
 
 import numpy as np
-from constants_1U import W_EARTH, LAUNCHDATE, EQUINOX, G, M_EARTH,R_EARTH
+from constants_1U import W_EARTH, LAUNCHDATE, EQUINOX, v_w_IOO
 from math import radians, sin, cos, acos, pi
 import qnv as qnv
 
@@ -86,24 +86,56 @@ def ecif2orbit(r,v,vector_ecif):
 def qBI_2_qBO(qBI,r,v):
 	#input: quaternion which rotates ecif vector to body frame
 	#output: quaternion which rotates orbit frame vector to body frame
+	#Orbit frame def:	z_o = nadir(opposite to satellite position vector) y_o: cross(v,r) x_o: cross(y,z) 
+
 	z = -r/np.linalg.norm(r)
 	y = np.cross(v,r)/np.linalg.norm(np.cross(v,r))
-	x = np.cross(y,z)
-	M = np.array([x,y,z])
+	x = np.cross(y,z)/np.linalg.norm(np.cross(y,z))
+	M_OI = np.array([x,y,z])
 
-	q_IO = qnv.rotm2quat(np.transpose(M))
-	G = np.array([[ qBI[0],	-qBI[1], -qBI[2], -qBI[3]],
+	qIO = qnv.rotm2quat(np.transpose(M_OI))
+
+	G1 = np.array([[ qBI[0],	-qBI[1], -qBI[2], -qBI[3]],
 				  [	qBI[1],	qBI[0],	qBI[3],	-qBI[2]],
 				  [ qBI[2], -qBI[3], qBI[0], qBI[1]],
 				  [ qBI[3], qBI[2], -qBI[1], qBI[0]]])
-	q_BO = np.dot(G,q_IO)
-	return q_BO
+
+	qBO = np.dot(G1,qIO)
+
+	if qBO[0] < 0.:
+		qBO = -1.*qBO.copy()
+
+	return qBO
+
+def qBO_2_qBI(qBO,r,v):
+	#input: quaternion which rotates orbit frame vector to body frame
+	#output: quaternion which rotates ecif vector to body frame
+	#Orbit frame def:	z_o = nadir(opposite to satellite position vector) y_o: cross(v,r) x_o: cross(y,z)
+	z = -r/np.linalg.norm(r)
+	y = np.cross(v,r)/np.linalg.norm(np.cross(v,r))
+	x = np.cross(y,z)/np.linalg.norm(np.cross(y,z))
+	M_OI = np.array([x,y,z])
+
+	qOI = qnv.rotm2quat(M_OI)
+	G1 = np.array([[ qBO[0],	-qBO[1], -qBO[2], -qBO[3]],
+				  [	qBO[1],	qBO[0],	qBO[3],	-qBO[2]],
+				  [ qBO[2], -qBO[3], qBO[0], qBO[1]],
+				  [ qBO[3], qBO[2], -qBO[1], qBO[0]]])
+	qBI = np.dot(G1,qOI)
+
+	if qBI[0] < 0. :
+		qBI = -1.*qBI.copy()
+
+	return qBI
 
 def wBIB_2_wBOB(wBIB,qBO):
 	#input: angular rate of body wrt ecif in body frame, quaternion which rotates orbit vector to body frame
 	#output: angular rate of body frame wrt orbit frame in body frame
-	wIOO = np.array([0., np.sqrt(G*M_EARTH/R_EARTH**3), 0.])	#w of ecif wrt orbit in orbit frame
-	return wBIB + qnv.quatRotate(qBO,wIOO)
+	
+	return wBIB + qnv.quatRotate(qBO,v_w_IOO)
+
+
+
 
 '''
 
