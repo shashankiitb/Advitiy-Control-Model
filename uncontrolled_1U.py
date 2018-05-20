@@ -18,11 +18,12 @@ sgp_output = sio.loadmat('SGP_120k.mat')['SGP_120k'].transpose()
 
 si_output = np.genfromtxt('si_output.csv',delimiter=",")
 light_output = np.genfromtxt('light_output.csv',delimiter=",")
+count = 0 # to count no. of transitions from light to eclipse
 init,end = 0,0
 for k in range(0,len(light_output)):
 	#obtain index corresponding to the start of eclipse
-	l1 = light_output[k]
-	l2 = light_output[k+1]
+	l1 = light_output[1,k]
+	l2 = light_output[1,k+1]
 	if l1 ==1 and l2 == 0 and count == 0:	#start of eclipse
 		init = k
 		count = 1
