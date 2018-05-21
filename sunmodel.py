@@ -24,7 +24,7 @@ for i in range (N):
 	x = np.cos(theta)						#components as got from document reffered
 	y = np.sin(theta)*np.cos(epsilon) 
 	z = np.sin(theta)*np.sin(epsilon) 
-	v_sun_i = [x, y, z] 	#sun vector in ECI Frame
+	v_sun_i = np.array([x, y, z]) 	#sun vector in ECI Frame
 	v_sun_i = v_sun_i/np.linalg.norm(v_sun_i.copy())
 	si_output[i,0] = T[i] 	#first component is time
 	si_output[i,1:4] = v_sun_i.copy();
