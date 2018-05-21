@@ -49,7 +49,7 @@ def quatRotate(q,x): #rotates vecctor x by quaternion q
 
 def quatDer1(q,w): # w is angular velocity of body wrt inertial frame in body frame. q transforms inertial frame vector to body frame
 
-	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,w[2],-w[1]],[w[1],-w[2],0,w[0]],[w[2],w[1],-w[0],0]])
+	W = np.array([[0.,-w[0],-w[1],-w[2]],[w[0],0.,w[2],-w[1]],[w[1],-w[2],0.,w[0]],[w[2],w[1],-w[0],0.]])
 	q_dot = 0.5*np.dot(W,q)
 
 	return q_dot
@@ -106,6 +106,18 @@ def quat2rotm(q): #given a quaternion it returns a rotation matrix
 	M2 = -2*q0*np.array([[0,-q3,q2],[q3,0,-q1],[-q2,q1,0]])
 	M3 = np.identity(3)
 	return M1 + M2 + M3
+
+
+def quat2euler(q):
+	#input quaternion
+	#output euler angles: roll, pitch, yaw in degrees
+	M = quat2rotm(q)
+
+	yaw = math.atan2(M[0,1],M[0,0])
+	pitch = -math.asin(M[0,2])
+	roll = math.atan2(M[1,2],M[2,2])
+
+	return (180./np.pi)*np.array([roll,pitch,yaw])
 
 '''
 def skew(v):
