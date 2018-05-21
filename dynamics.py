@@ -1,5 +1,5 @@
 import numpy as np                                     
-from constants_1U import m_INERTIA
+from constants_1U import m_INERTIA,m_INERTIA_inv
 from qnv import quatDer1
 #-----------------------------------------------------------------------------------------------------------------------------
 def x_dot(sat,t,x):    #need m_INERTIA 
@@ -20,7 +20,7 @@ def x_dot(sat,t,x):    #need m_INERTIA
     #Kinematic equation
     v_q_dot = quatDer1(v_q_BI,v_w_BIB)   
     #Dynamic equation 
-    m_INERTIA_inv = np.linalg.inv(m_INERTIA)
+   
     
     v_w_dot = np.dot(m_INERTIA_inv,v_torque_b - np.cross(v_w_BIB,np.dot(m_INERTIA,v_w_BIB)))    #Euler equation of motion
 

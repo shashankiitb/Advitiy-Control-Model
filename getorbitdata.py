@@ -20,3 +20,9 @@ for i in range (N):
 np.savetxt("sgp_output.csv", sgp_output, delimiter=",") #Saves sgp_output to csv file
 print type(sgp_output)
 print np.shape(sgp_output)
+
+print sgp_output[0,:]
+print sgp_output[3600,:]
+print sgp_output[7200,:]
+print sgp_output[10800,:]
+print sgp_output[14400,:]
