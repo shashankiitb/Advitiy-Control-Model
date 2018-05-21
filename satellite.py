@@ -1,4 +1,4 @@
-from constants import *
+from constants_1U import *
 import numpy as np
 import qnv
 import frames as fs
@@ -54,9 +54,10 @@ class Satellite:
 	def setDisturbance_b(self,v_torque_dist_b):	#set disturbance in body frame
 		self.dist_b = v_torque_dist_b.copy()
 
-	def getDisturbance_b(self):	#return disturbance in body
+	def getDisturbance_b(self):	#return disturbance in body 
 		
 		return self.dist_b
+
 
 	def setControl_b(self,v_control_b):	#set control torque in body
 		self.control_body = v_control_b.copy()
@@ -110,6 +111,9 @@ class Satellite:
 
 	def setLight(self,flag):
 		self.light = flag
+
+	def getLight(self):
+		return self.light
 
 	def getW(self):
 
