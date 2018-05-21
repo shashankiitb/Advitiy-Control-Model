@@ -16,6 +16,9 @@ def rk4(sat,f,h):
 	k4 = h*f(sat, t+h, v_state_0+k3)
 
 	v_state_new = v_state_0 + (1./6.)*(k1 + 2.*k2 + 2.*k3 + k4)
-
+	
+	if v_state_new[0] < 0. :
+		v_state_new[0:4] = -v_state_new[0:4].copy()
+	
 	return v_state_new
 
