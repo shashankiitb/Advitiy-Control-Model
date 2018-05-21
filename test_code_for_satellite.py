@@ -261,11 +261,10 @@ else:
 	print ("getMag_o incorrect")
 
 
-Sat4.setDisturbance_i(w)
+Sat4.setDisturbance_b(w)
 a=Sat4.getDisturbance_b()
-v_t_d_o=fs.ecif2orbit(v_Pos_i,v_vel_i,w)
-b=qnv.quatRotate(Q,v_t_d_o)
-if (a==b).all():
-	print ("setDisturbance_i and getDisturbance_b correct")
+
+if (a==w).all():
+	print ("setDisturbance_b and getDisturbance_b correct")
 else:
-	print ("setDisturbance_i or getDisturbance_b incorrect")
+	print ("setDisturbance_b or getDisturbance_b incorrect")
