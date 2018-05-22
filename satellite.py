@@ -51,7 +51,7 @@ class Satellite:
 	def getTime(self):	#return time
 		return self.time
 
-	def setDisturbance_b(self,v_torque_dist_b):	#set disturbance in body
+	def setDisturbance_b(self,v_torque_dist_b):	#set disturbance in body (about center of mass)
 		self.dist_b = v_torque_dist_b.copy()
 
 	def getDisturbance_b(self):	#return disturbance in body
