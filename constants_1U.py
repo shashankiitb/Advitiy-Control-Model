@@ -16,7 +16,7 @@ v_w_IOO = np.array([0., np.sqrt(G*M_EARTH/R_EARTH**3), 0.]) #w of ecif wrt orbit
 LINE1 = ('1 41783U 16059A   18093.17383152  .00000069  00000-0  22905-4 0  9992') #Insert TLE Here
 LINE2 = ('2 41783  98.1258 155.9141 0032873 333.2318  26.7186 14.62910114 80995') 
 Incl = LINE2[9:17]
-Inclination = int("".join(map(str, Inc1)))
+Inclination = int("".join(map(str, Incl)))
 LAUNCHDATE = dt.datetime(2018, 4, 03, 12, 50, 19)	#date of launch t=0
 EQUINOX = dt.datetime(2018, 3, 20, 13, 05, 00)	#day of equinox
 steprut = 1.002738 #siderial time = stperut * universal time
