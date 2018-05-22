@@ -2,7 +2,7 @@ import numpy as np
 from constants_1U import m_INERTIA
 from qnv import quatDer1
 #-----------------------------------------------------------------------------------------------------------------------------
-def x_dot(sat,t,x):    #need m_INERTIA 
+def x_dot(sat,t,x):    #need m_INERTIA and state (x)
     '''
         This function calculates the derivative of quaternion (q_BI)
         and angular velocity w_BIB
