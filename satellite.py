@@ -41,7 +41,7 @@ class Satellite:
 	def getQ(self):	#get exact quaternion
 		return self.state[0:4]
 
-	def setW(self,omega):	#set omega
+	def setW(self,omega):	#set angular rate of body wrt ecif in body frame 
 
 		self.state[4:7] = omega.copy()
 
