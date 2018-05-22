@@ -15,11 +15,15 @@ v_w_IOO = np.array([0., np.sqrt(G*M_EARTH/R_EARTH**3), 0.]) #w of ecif wrt orbit
 #------------date format yyyy,mm,dd
 LINE1 = ('1 41783U 16059A   18093.17383152  .00000069  00000-0  22905-4 0  9992') #Insert TLE Here
 LINE2 = ('2 41783  98.1258 155.9141 0032873 333.2318  26.7186 14.62910114 80995') 
-Inclination = 98.1258
+Incl = LINE2[9:17]
+Inclination = int("".join(map(str, Inc1)))
 LAUNCHDATE = dt.datetime(2018, 4, 03, 12, 50, 19)	#date of launch t=0
 EQUINOX = dt.datetime(2018, 3, 20, 13, 05, 00)	#day of equinox
 steprut = 1.002738 #siderial time = stperut * universal time
-TimePeriod = 86400/14.62910114
+TPer = LINE2[53:64]
+TiPer = int("".join(map(str, TPer)))
+TimePeriod = 86400/TiPer
+
 #-- --------Moment of inertia matrix in kgm^2 for 1U satellite (assumed to be uniform with small off-diagonal)
 MASS_SAT = 0.850	#in kg
 
@@ -32,6 +36,7 @@ Ixz = -5.386e-6
 Imin = min(Ixx, Iyy, Izz, Ixy, Iyz, Ixz)
 m_INERTIA = np.array([[Ixx, Ixy, Ixz], [Ixy, Iyy, Iyz], [Ixz, Iyz, Izz]])
 m_INERTIA_inv = np.linalg.inv(m_INERTIA)	#inverse of inertia matrix
+MODEL_STEP=0.1
 
 #Satellite Dimensions
 Lx = 0.10	#in meters
