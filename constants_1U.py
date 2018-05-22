@@ -17,6 +17,7 @@ LINE1 = ('1 41783U 16059A   18093.17383152  .00000069  00000-0  22905-4 0  9992'
 LINE2 = ('2 41783  98.1258 155.9141 0032873 333.2318  26.7186 14.62910114 80995') 
 Incl = LINE2[8:16]
 Inclination = float("".join(map(str, Incl)))
+print Inclination
 LAUNCHDATE = dt.datetime(2018, 4, 03, 12, 50, 19)	#date of launch t=0
 EQUINOX = dt.datetime(2018, 3, 20, 13, 05, 00)	#day of equinox
 steprut = 1.002738 #siderial time = stperut * universal time
@@ -71,4 +72,5 @@ r_COM = np.array([-0.067e-2,-0.58e-2,-0.067e-2])
 AERO_DRAG = 2.2
 RHO = 0.218e-12
 
-k = 4*np.pi*(1+sin(radians(Inclination-11)))*Imin/TimePeriod  #gain constant in B_dot controller
+k = 4*np.pi*(1+sin(radians(Inclination-11)))*Jmin/TimePeriod  #gain constant in B_dot controller
+print k
