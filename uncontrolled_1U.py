@@ -1,7 +1,7 @@
 import numpy as np
 import satellite
 import disturbance_1U as dist
-from constants_1U import v_q0_BO,v_w0_BIB, R_EARTH, ALTITUDE
+from constants_1U import v_q0_BO,v_w0_BIB, R_EARTH, ALTITUDE, DELAY_STEP
 from dynamics import x_dot
 import frames as fs
 import solver as sol
@@ -41,9 +41,8 @@ for k in range(0,len(light_output)):
 #define simulation parameters
 t0 = sgp_output[init,0]
 tf = sgp_output[end,0]	#simulation time in seconds
-dt = 0.1	#step size of simulation in seconds
 h = 0.1		#step size of integration in seconds
-N = int((tf-t0)/dt)+1
+N = int((tf-t0)/DELAY_STEP)+1
 
 
 
@@ -77,7 +76,7 @@ for  i in range(0,N-1):
 	else:
 		Advitiy.setLight(1)
 	Advitiy.setState(v_state[i,:])
-	Advitiy.setTime(t0 + i*dt)
+	Advitiy.setTime(t0 + i*DELAY_STEP)
 	Advitiy.setPos(sgp_output[i,1:4])
 	Advitiy.setVel(sgp_output[i,4:7])
 	Advitiy.setSun_i(si_output[i,1:4])
@@ -93,10 +92,10 @@ for  i in range(0,N-1):
 	v_state_next = np.zeros((1,7))
 
 	#Use rk4 solver to calculate the state for next step
-	for j in range(0,int(dt/h)):		
+	for j in range(0,int(DELAY_STEP/h)):		
 		v_state_next = sol.rk4(Advitiy,x_dot,h)
 		Advitiy.setState(v_state_next.copy())
-		Advitiy.setTime(t0 + i*dt + (j+1)*h)
+		Advitiy.setTime(t0 + i*DELAY_STEP + (j+1)*h)
 
 	v_state[i+1,:] = v_state_next.copy()
 	
