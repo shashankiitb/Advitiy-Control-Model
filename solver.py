@@ -16,5 +16,6 @@ def rk4(sat,f,h): #This is Runge Kutta-4 solver for ordinary differential equati
 
 	v_state_new = v_state_0 + (1./6.)*(k1 + 2.*k2 + 2.*k3 + k4)
 
+	v_state_new[0:4] = v_state_new[0:4]/np.linalg.norm(v_state_new[0:4]) 
+	
 	return v_state_new
-
