@@ -1,10 +1,9 @@
 import numpy as np
 
-def rk4(sat,f,h):
+def rk4(sat,f,h): #This is Runge Kutta-4 solver for ordinary differential equation.
 	'''
-		This is Runge Kutta-4 solver for ordinary differential equation.
-		Input is satellite object, f and integration step size
-		It returns x(t+1) using xdot and x(t)
+		Input is satellite object, f (derivative of state vector (quaternion and anguar velocity)) and integration step size
+		It returns value of state at next time (after a time steo of h) (x(t+h)) using f and value of state at current time x(t)
 	'''
 	v_state_0 = sat.getState()	#state at t = t0	
 	t = sat.getTime()
