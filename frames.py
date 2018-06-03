@@ -1,7 +1,7 @@
 #Code for transformation of vector from one reference frame to another
 
 import numpy as np
-from constants_1U import W_EARTH, LAUNCHDATE, EQUINOX, v_w_IO_o, STEPRUT
+from constants_1U import W_EARTH, EPOCH, EQUINOX, v_w_IO_o, STEPRUT
 from math import radians, sin, cos, acos, pi
 import qnv as qnv
 
@@ -42,7 +42,7 @@ def sgn(x):
 def ecif2ecef(v_x_i,t):
 	#Input ecif cector and time since epoch in seconds
 	# output ecef vector
-	ut_sec = (LAUNCHDATE - EQUINOX).total_seconds() + t # universal time vector in sec 
+	ut_sec = (EPOCH - EQUINOX).total_seconds() + t # universal time vector in sec 
 	theta = W_EARTH*ut_sec #in radian
 	m_DCM = np.array([[cos(theta), sin(theta), 0.], [-1*sin(theta), cos(theta),0.], [0.,0.,1.]])
 	v_x_e = np.dot(m_DCM,v_x_i)
@@ -51,7 +51,7 @@ def ecif2ecef(v_x_i,t):
 
 def ecif2ecefR(t):
 
-	ut_sec = (LAUNCHDATE - EQUINOX).total_seconds() + t # universal time vector in sec
+	ut_sec = (EPOCH - EQUINOX).total_seconds() + t # universal time vector in sec
 	st_sec = STEPRUT*ut_sec   #sidereal time vector in sec
 
 	phi = st_sec*W_EARTH           # sidereal time vector in rad
@@ -64,7 +64,7 @@ def ecif2ecefR(t):
 def ecef2ecif(v_x_e,t):
 	#Input ecef cector and time since epoch in seconds
 	# output ecif vector
-	ut_sec = (LAUNCHDATE - EQUINOX).total_seconds() + t # universal time vector in sec
+	ut_sec = (EPOCH - EQUINOX).total_seconds() + t # universal time vector in sec
 	theta = W_EARTH*ut_sec #in radian
 	m_DCM = np.array([[cos(theta), -1*sin(theta), 0.], [sin(theta), cos(theta),0.],[ 0.,0.,1.]])
 	v_x_i = np.dot(m_DCM,v_x_e)

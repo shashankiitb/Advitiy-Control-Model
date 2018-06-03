@@ -31,14 +31,14 @@ for i in range(N):
     #angle between sun-vector and satellite position vector in ECI frame
     theta = np.arccos(np.dot(v_pos_i, v_sun_i) /np.linalg.norm(v_pos_i) )
     #angle between the sunvector and vector from the vertex of the umbra cone to satellite
-    P_u = np.arccos((np.dot((v_pos_i + r_umbra*v_sun_i), v_sun_i)) / np.linalg.norm(v_pos_i + r_umbra*v_sun_i))
+    theta_u = np.arccos((np.dot((v_pos_i + r_umbra*v_sun_i), v_sun_i)) / np.linalg.norm(v_pos_i + r_umbra*v_sun_i))
     #angle between the negative sunvector and vector from the vertex of the penumbra cone to satellite
-    P_p =np.arccos((np.dot((v_pos_i - r_penumbra*v_sun_i), -v_sun_i)) / np.linalg.norm(v_pos_i - r_penumbra*v_sun_i))
+    theta_p =np.arccos((np.dot((v_pos_i - r_penumbra*v_sun_i), -v_sun_i)) / np.linalg.norm(v_pos_i - r_penumbra*v_sun_i))
     
     #Boolean to store whether satellite is in light or dark. 1 implies satellite is in light.
-    if (theta >= np.pi/2 + alpha) & (P_u <= alpha):
+    if (theta >= np.pi/2 + alpha) & (theta_u <= alpha):
         flag = 0
-    elif (theta >= np.pi/2 - beta)  & (P_p <= beta):
+    elif (theta >= np.pi/2 - beta)  & (theta_p <= beta):
         flag = 0.5
     else:
     	flag = 1
