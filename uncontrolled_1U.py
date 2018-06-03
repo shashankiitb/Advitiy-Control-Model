@@ -11,23 +11,23 @@ import matplotlib.pyplot as plt
 import qnv as qnv
 import math
 
-#Read position, velocity, sun-vector in ECIF from data file
-#sgp_output = 1e3*np.genfromtxt('sgp_output.csv', delimiter=",")
+#Read position, velocity, sun-vector in ECIF from data file. temp variable for entire file
+sgp_output_temp = np.genfromtxt('sgp_output.csv', delimiter=",")
 
-sgp_output = sio.loadmat('SGP_120k.mat')['SGP_120k'].transpose()
-
-si_output = np.genfromtxt('si_output.csv',delimiter=",")
-light_output = np.genfromtxt('light_output.csv',delimiter=",")
-init,end = 0,0
-for k in range(0,len(light_output)):
+si_output_temp = np.genfromtxt('si_output.csv',delimiter=",")
+light_output_temp = np.genfromtxt('light_output.csv',delimiter=",")
+init,end ,count= 0,0,0
+for k in range(0,len(light_output_temp)-1):
 	#obtain index corresponding to the start of eclipse
-	l1 = light_output[k]
-	l2 = light_output[k+1]
-	if l1 ==1 and l2 == 0 and count == 0:	#start of eclipse
+	l1 = light_output_temp[k,1]
+	l2 = light_output_temp[k+1,1]
+	if l1 ==0.5 and l2 == 1 and count == 0:	#start of eclipse
 		init = k
 		count = 1
-	elif l1==1 and l2==0 and count == 1:	#start of second eclipse
+		
+	elif l1==0.5 and l2==1 and count == 1:	#start of second eclipse
 		end = k 
+		
 		break
 #sgp_output = np.zeros((len(si_output[:,0]),7))
 #sgp_output[:,0] = si_output[:,0].copy()
@@ -38,15 +38,18 @@ for k in range(0,len(light_output)):
 #sgp_output[:,6] = 7.5e3*np.cos(w*sgp_output[:,0])
 
 #define simulation parameters
-t0 = sgp_output[init,0]
-tf = sgp_output[end,0]	#simulation time in seconds
+print init,end
+t0 = sgp_output_temp[init,0]
+tf = sgp_output_temp[end,0]	#simulation time in seconds
 dt = 0.1	#step size of simulation in seconds
 h = 0.1		#step size of integration in seconds
 N = int((tf-t0)/dt)+1
 
-
-
-print N
+#extract init to end data from temp file
+sgp_output = sgp_output_temp[init:(init+N),:].copy()
+si_output = si_output_temp[init:(init+N),:].copy()
+light_output = light_output_temp[init:(init+N),:].copy()
+print N ,'Simulation for ' ,dt*(N-1),'seconds'
 
 #initialize empty matrices
 v_state = np.zeros((N,7))
@@ -55,10 +58,10 @@ v_w_BOB = np.zeros((N,3))
 euler = np.zeros((N,3))
 torque_dist = np.zeros((N,3))
 
-v_q0_BI = fs.qBO_2_qBI(v_q0_BO,sgp_output[0,1:4],sgp_output[0,4:7])	
+v_q0_BI = fs.qBO2qBI(v_q0_BO,sgp_output[0,1:4],sgp_output[0,4:7])	
 v_state[0,:] = np.hstack((v_q0_BI,v_w0_BIB))
 v_q_BO[0,:] = v_q0_BO
-v_w_BOB[0,:] = fs.wBIB_2_wBOB(v_w0_BIB,v_q_BO[0,:])
+v_w_BOB[0,:] = fs.wBIb2wBOb(v_w0_BIB,v_q_BO[0,:])
 euler[0,:] = qnv.quat2euler(v_q_BO[0,:])
 
 #Make satellite object
@@ -68,13 +71,11 @@ Advitiy.setControl_b(np.array([0.,0.,0.]))	#uncontrolled satellite
 #-------------Main for loop---------------------
 for  i in range(0,N-1):
 	if math.fmod(i,N/100) == 0 and i>5:
-		print 100*i/N , np.linalg.norm(v_torque_gg_b), np.linalg.norm(v_torque_aero_b), np.linalg.norm(v_torque_solar_b)
-		#print v_torque_total_b
+		print 100*i/N 
+		
 	#Set satellite parameters
-	if i < int(N/2):
-		Advitiy.setLight(0)
-	else:
-		Advitiy.setLight(1)
+	
+	Advitiy.setLight(light_output[i,1])
 	Advitiy.setState(v_state[i,:])
 	Advitiy.setTime(t0 + i*dt)
 	Advitiy.setPos(sgp_output[i,1:4])
@@ -85,7 +86,7 @@ for  i in range(0,N-1):
 	v_torque_aero_b = dist.aero_torque(Advitiy).copy()
 	v_torque_solar_b = dist.solar_torque(Advitiy).copy()
 	
-	v_torque_total_b =(v_torque_gg_b + v_torque_aero_b + v_torque_solar_b)
+	v_torque_total_b =0*(v_torque_gg_b + v_torque_aero_b + v_torque_solar_b)
 	Advitiy.setDisturbance_b(v_torque_total_b)
 	torque_dist[i,:] = v_torque_total_b.copy()
 
@@ -101,23 +102,23 @@ for  i in range(0,N-1):
 	
 	#Calculate observable quantities
 	
-	v_q_BO[i+1,:] = fs.qBI_2_qBO(v_state_next[0:4],Advitiy.getPos(),Advitiy.getVel())
-	v_w_BOB[i+1,:] = fs.wBIB_2_wBOB(v_state_next[4:7],v_q_BO[i+1,:])
+	v_q_BO[i+1,:] = fs.qBI2qBO(v_state_next[0:4],Advitiy.getPos(),Advitiy.getVel())
+	v_w_BOB[i+1,:] = fs.wBIb2wBOb(v_state_next[4:7],v_q_BO[i+1,:])
 	euler[i+1,:] = qnv.quat2euler(v_q_BO[i+1,:])
 
 
 #save the data files
 os.chdir('Logs/')
-os.mkdir('sso-1U-dist')
-os.chdir('sso-1U-dist')
-np.save('position',sgp_output[init:end+1,1:4])
-np.save('velocity',sgp_output[init:end+1,4:7])
+os.mkdir('sso-identity-no-dist')
+os.chdir('sso-identity-no-dist')
+np.savetxt('position.csv',sgp_output[:,1:4], delimiter=",")
+np.savetxt('velocity.csv',sgp_output[:,4:7], delimiter=",")
 
-np.save('time',sgp_output[init:end+1,0] - t0)
-np.save('w_BOB',v_w_BOB)
-np.save('q_BO',v_q_BO)
-np.save('state',v_state)
-np.save('euler',euler)
-np.save('disturbance',torque_dist)
+np.savetxt('time.csv',sgp_output[:,0] - t0, delimiter=",")
+np.savetxt('w_BOB.csv',v_w_BOB, delimiter=",")
+np.savetxt('q_BO.csv',v_q_BO, delimiter=",")
+np.savetxt('state.csv',v_state, delimiter=",")
+np.savetxt('euler.csv',euler, delimiter=",")
+np.savetxt('disturbance.csv',torque_dist, delimiter=",")
 
-print 'sso-1U-dist'
+print 'sso-identity-no-dist'

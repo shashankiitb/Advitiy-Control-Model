@@ -1,5 +1,5 @@
 import numpy as np
-from constants_1U import LAUNCHDATE, EQUINOX
+from constants_1U import EPOCH, EQUINOX
 from ddt import ddt, data, unpack
 import unittest
 
@@ -10,7 +10,7 @@ import unittest
 @ddt
 class Test_Sun_Model(unittest.TestCase):
 	si_output = np.genfromtxt('si_output.csv',delimiter=",")	
-	t0 = (LAUNCHDATE - EQUINOX).total_seconds()
+	t0 = (EPOCH - EQUINOX).total_seconds()
 	T = si_output[:,0]
 
 	def calculate_sun_vector(self,t):	#calculate sun vector using code of model 
@@ -30,4 +30,4 @@ class Test_Sun_Model(unittest.TestCase):
 		self.assertTrue(np.allclose(v_expected,v_result))
 
 if __name__=='__main__':
-	unittest.main(verbosity=2)
+   unittest.main(verbosity=2)

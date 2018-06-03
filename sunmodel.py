@@ -1,5 +1,5 @@
 import numpy as np
-from constants_1U import LAUNCHDATE, EQUINOX
+from constants_1U import EPOCH, EQUINOX
 import scipy.io as sio
 '''
 	This code gives sun-vector (unit vector from center of earth to center of sun) in ECI frame.
@@ -14,7 +14,7 @@ N = len(T)
 si_output = np.zeros((N,4))
 
 #The time from equinox and the initial time (launch) in seconds
-initialdelay = (LAUNCHDATE - EQUINOX).total_seconds() 
+initialdelay = (EPOCH - EQUINOX).total_seconds() 
 
 for i in range (N):
 	time = (initialdelay + T[i]) / 86400. 	#The time passed from equinox till each point in orbit in days

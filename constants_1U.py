@@ -14,17 +14,17 @@ ALTITUDE = 700e3
 AU = 149597870610.0 #Distance between sun and earth in meters
 R_SUN = 695500000.0 #Radius of the Sun in meters
 
-v_w_IOO = np.array([0., np.sqrt(G*M_EARTH/(R_EARTH + ALTITUDE)**3), 0.]) #w of ecif wrt orbit in orbit frame
-print v_w_IOO
+v_w_IO_o = np.array([0., np.sqrt(G*M_EARTH/(R_EARTH + ALTITUDE)**3), 0.]) #w of ecif wrt orbit in orbit frame
+
 #------------date format yyyy,mm,dd
 LINE1 = ('1 41783U 16059A   18093.17383152  .00000069  00000-0  22905-4 0  9992') #Insert TLE Here
 LINE2 = ('2 41783  98.1258 155.9141 0032873 333.2318  26.7186 14.62910114 80995') 
 
 #LINE1 = ('1 88888U          80275.98708465  .00073094  13844-3  66816-4 0     8') 
 #LINE2 = ('2 88888  72.8435 115.9689 0086731  52.6988 110.5714 16.05824518   105')
-LAUNCHDATE = dt.datetime(2018, 4, 03, 12, 50, 19)	#date of launch t=0
+EPOCH = dt.datetime(2018, 4, 03, 12, 50, 19)	#date of launch t=0
 EQUINOX = dt.datetime(2018, 3, 20, 13, 05, 00)	#day of equinox
-steprut = 1.002738 #sidereal time = stperut * universal time
+STEPRUT = 1.002738 #sidereal time = stperut * universal time
 
 #-- --------Moment of inertia matrix in kgm^2 for 1U satellite (assumed to be uniform with small off-diagonal)
 MASS_SAT = 0.850	#in kg
@@ -54,7 +54,7 @@ v_Az = np.array([0.,0.,0.01])	#area vector perpendicular to z-axis in m^2
 #------------Initial conditions
 v_q0_BO = np.array([1.,0.,0.,0.])	#unit quaternion initial condition
 
-v_w0_BIB = -v_w_IOO	#initial angular velocity
+v_w0_BI_b = -v_w_IO_o	#initial angular velocity
 #v_STATE0 = np.hstack((v_q0_BI,v_w0_BIB))	#Initial state vector [q_BO , w_BOB]
 
 

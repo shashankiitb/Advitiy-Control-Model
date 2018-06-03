@@ -19,6 +19,6 @@ def rk4(sat,f,h):
 	
 	if v_state_new[0] < 0. :
 		v_state_new[0:4] = -v_state_new[0:4].copy()
-	
+	v_state_new = v_state_new.copy()/np.linalg.norm(v_state_new)
 	return v_state_new
 
