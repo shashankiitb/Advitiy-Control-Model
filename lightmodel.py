@@ -38,7 +38,7 @@ for i in range(N):
     #Boolean to store whether satellite is in light or dark. 1 implies satellite is in light.
     if (theta >= np.pi/2 + alpha) & (P_u <= alpha):
         flag = 0
-    elif (theta >= np.pi/2 - beta) & (P_u > alpha) & (P_p <= beta):
+    elif (theta >= np.pi/2 - beta)  & (P_p <= beta):
         flag = 0.5
     else:
     	flag = 1

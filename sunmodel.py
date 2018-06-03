@@ -8,8 +8,7 @@ import scipy.io as sio
 '''
 
 
-sgp_output = sio.loadmat('SGP_120k.mat')['SGP_120k'].transpose()
-
+sgp_output = np.genfromtxt('sgp_output.csv', delimiter=",")
 T = sgp_output[:,0].copy()	#time in seconds
 N = len(T)
 si_output = np.zeros((N,4))
@@ -30,4 +29,3 @@ for i in range (N):
 	si_output[i,1:4] = v_sun_i.copy();
 
 np.savetxt("si_output.csv", si_output, delimiter=",") #Saves si_output to csv file
-sio.savemat('si_output.mat', {'si_output':si_output})	#Saves si_output to mat file
