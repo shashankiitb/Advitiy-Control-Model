@@ -1,7 +1,7 @@
 #Code for transformation of vector from one reference frame to another
 
 import numpy as np
-from constants_1U import W_EARTH, EPOCH, EQUINOX, v_w_IO_o, STEPRUT
+from constants_1U import W_EARTH, EPOCH, EQUINOX, STEPRUT
 from math import radians, sin, cos, acos, pi
 import qnv as qnv
 
@@ -132,8 +132,9 @@ def qBO2qBI(v_q_BO,v_pos_i,v_vel_i):
 
 	return v_q_BI
 
-def wBIb2wBOb(v_w_BI_b,v_q_BO):
+def wBIb2wBOb(v_w_BI_b,v_q_BO,v_w_IO_o):
 	#input: angular velocity of body wrt ecif in body frame, unit quaternion which rotates orbit vector to body frame
+	#		angular velocity of ecif wrt orbit frame in orbit frame
 	#output: angular velocity of body frame wrt orbit frame in body frame
 	
 	return v_w_BI_b + qnv.quatRotate(v_q_BO,v_w_IO_o)
