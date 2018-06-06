@@ -27,12 +27,12 @@ STEPRUT = 1.002738 #sidereal time = stperut * universal time
 MASS_SAT = 0.850	#in kg
 Lx = 0.1	#in meters
 
-Ixx = 0.0015
-Iyy = 0.0015
-Izz = 0.0011
-Ixy = -6.39e-6
-Iyz = -2.16e-5
-Ixz = -5.386e-6
+Ixx = 0.00152529
+Iyy = 0.00145111
+Izz = 0.001476	
+Ixy = 0.00000437
+Iyz = -0.00000408
+Ixz = 0.00000118
 
 m_INERTIA = np.array([[Ixx, Ixy, Ixz], [Ixy, Iyy, Iyz], [Ixz, Iyz, Izz]])	#actual inertia
 #m_INERTIA = 0.001*np.array([[1.0,0.,0.],[0.,1.,0.],[0.,0.,1.]])	#identity inertia
@@ -47,14 +47,14 @@ v_Az = np.array([0.,0.,0.01])	#area vector perpendicular to z-axis in m^2
 CONTROL_STEP = 2.0	#control cycle time period in second
 
 #--------Magnetorquer parameters
-INDUCTANCE = 1e-3	#Inductance of torquer in Henry
-RESISTANCE = 100.0	#Resistance of torquer	in Ohm
+INDUCTANCE = 68e-3	#Inductance of torquer in Henry
+RESISTANCE = 107.0	#Resistance of torquer	in Ohm
 PWM_FREQUENCY = 1e3 	#frequency of PWM signal 
-V_PWM = 3.3	#PWM amplitude in volt
+PWM_AMPLITUDE = 3.3	#PWM amplitude in volt
 
-TORQUER_A_x = 0.07**2	#Area of torquer monted on y-z plane
-TORQUER_A_y = 0.07**2	#Area of torquer monted on x-z plane
-TORQUER_A_z = 0.07**2	#Area of torquer monted on x-y plane
+TORQUER_Ax = 0.07**2	#Area of torquer monted on y-z plane
+TORQUER_Ay = 0.07**2	#Area of torquer monted on x-z plane
+TORQUER_Az = 0.07**2	#Area of torquer monted on x-y plane
 
 #Disturbance model constants
 SOLAR_PRESSURE = 4.56e-6	#in N/m^2
