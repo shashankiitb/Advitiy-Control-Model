@@ -3,7 +3,7 @@ import unittest	#testing library
 import numpy as np
 from ddt import ddt,file_data,unpack,data
 from math import sin,cos
-from constants_1U import W_EARTH, EPOCH, EQUINOX, v_w_IO_o
+from constants_1U import W_EARTH, EPOCH, EQUINOX
 import qnv as qnv
 
 @ddt
@@ -137,20 +137,34 @@ class Test_qBI_2qBO(unittest.TestCase):
 		
 		self.assertTrue(np.allclose(expected ,result))
 
+class Test_qBO_2qBI(unittest.TestCase):	
+	def test_data2(self):
+		expected = np.array([0.5*np.sqrt(1+0.5*np.sqrt(3.)), -0.5*np.sqrt(1+0.5*np.sqrt(3.)), 
+						-0.25*np.sqrt(2/(2+np.sqrt(3))), 0.25*np.sqrt(2/(2+np.sqrt(3)))])
+		
+		r = np.array([0.,0.,7.07e6])
+		v = np.array([0.,7.0e3,0.])
+		v_q_BO = (0.5/np.sqrt(2.))*np.array([np.sqrt(3.),np.sqrt(3.),1.,1.])
+		result = fr.qBO2qBI(v_q_BO,r,v)
+		
+		self.assertTrue(np.allclose(expected ,result))
+
 @ddt
 class Test_wBIB_2_wBOB(unittest.TestCase):
 	def test_ideal_controlled(self):
+		v_w_IO_o = np.array([0.,0.00106178,0.])
 		qBO = np.array([1.,0.,0.,0.])
 		w_BIB = -qnv.quatRotate(qBO,v_w_IO_o)
-		w_BOB = fr.wBIb2wBOb(w_BIB,qBO)
+		w_BOB = fr.wBIb2wBOb(w_BIB,qBO,v_w_IO_o)
 		expected = np.array([0.,0.,0.])
 		self.assertTrue(np.allclose(w_BOB,expected))
 
 	@file_data('test-data/test_stationary_body.json')
 	def test_stationary_body(self,value):
+		v_w_IO_o = np.array([0.,0.00106178,0.])
 		qBO = np.asarray(value)
 		w_BIB = np.array([0.,0.,0.])
-		result = fr.wBIb2wBOb(w_BIB,qBO)
+		result = fr.wBIb2wBOb(w_BIB,qBO,v_w_IO_o)
 		expected = qnv.quatRotate(qBO,v_w_IO_o)
 		self.assertTrue(np.allclose(result,expected)) 
 

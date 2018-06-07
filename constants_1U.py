@@ -45,7 +45,7 @@ v_Az = np.array([0.,0.,0.01])	#area vector perpendicular to z-axis in m^2
 
 #--------Simulation constants
 CONTROL_STEP = 2.0	#control cycle time period in second
-
+MODEL_STEP = 0.1	#step size in environmental data in seconds
 #--------Magnetorquer parameters
 INDUCTANCE = 68e-3	#Inductance of torquer in Henry
 RESISTANCE = 107.0	#Resistance of torquer	in Ohm

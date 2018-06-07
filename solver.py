@@ -1,10 +1,9 @@
 import numpy as np
 
-def rk4(sat,f,h):
+def rk4Quaternion(sat,f,h): #This is Runge Kutta-4 solver for ordinary differential equation.
 	'''
-		This is Runge Kutta-4 solver for ordinary differential equation.
-		Input is satellite object, f and integration step size
-		It returns x(t+1) using xdot and x(t)
+		Input is satellite object, f (derivative of state vector (quaternion and angular velocity)) and integration step size
+		It returns value of state at next time (after a time step of h) (x(t+h)) using f and value of state at current time x(t)
 	'''
 	v_state_0 = sat.getState()	#state at t = t0	
 	t = sat.getTime()
@@ -19,6 +18,8 @@ def rk4(sat,f,h):
 	
 	if v_state_new[0] < 0. :
 		v_state_new[0:4] = -v_state_new[0:4].copy()
-	v_state_new = v_state_new.copy()/np.linalg.norm(v_state_new)
-	return v_state_new
+	
+	#Normalize to obtain unit quaternion (different from regular rk4 solver)	
+	v_state_new[0:4] = v_state_new[0:4].copy()/np.linalg.norm(v_state_new[0:4].copy()) #state at t0+h
 
+	return v_state_new

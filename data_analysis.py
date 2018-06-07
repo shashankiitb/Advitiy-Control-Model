@@ -2,13 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import qnv
 import os
-os.chdir('Logs/sso-identity-no-dist')
+os.chdir('Logs/polar-identity-no-dist')
 
 time = np.genfromtxt('time.csv',delimiter=",")
 v_state = np.genfromtxt('state.csv',delimiter=",")
 v_q_BO = np.genfromtxt('q_BO.csv',delimiter=",")
 v_w_BOB = np.genfromtxt('w_BOB.csv',delimiter=",")
-euler = np.genfromtxt('euler.csv',delimiter=",")
+euler = np.genfromtxt('euler_BO.csv',delimiter=",")
 dist_b = np.genfromtxt('disturbance.csv',delimiter=",")
 r = np.genfromtxt('position.csv',delimiter=",")
 
