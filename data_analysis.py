@@ -2,15 +2,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import qnv
 import os
-os.chdir('Logs/sso-1U-dist')
+os.chdir('Logs/polar-identity-no-dist')
 
-time = np.load('time.npy')
-v_state = np.load('state.npy')
-v_q_BO = np.load('q_BO.npy')
-v_w_BOB = np.load('w_BOB.npy')
-euler = np.load('euler.npy')
-dist_b = np.load('disturbance.npy')
-r = np.load('position.npy')
+time = np.genfromtxt('time.csv',delimiter=",")
+v_state = np.genfromtxt('state.csv',delimiter=",")
+v_q_BO = np.genfromtxt('q_BO.csv',delimiter=",")
+v_w_BOB = np.genfromtxt('w_BOB.csv',delimiter=",")
+euler = np.genfromtxt('euler_BO.csv',delimiter=",")
+dist_b = np.genfromtxt('disturbance.csv',delimiter=",")
+r = np.genfromtxt('position.csv',delimiter=",")
+
 plt.plot(time,euler[:,0],label='roll')
 plt.plot(time,euler[:,1],label='pitch')
 plt.plot(time,euler[:,2],label='yaw')
@@ -38,6 +39,7 @@ plt.plot(time,r[:,0],label='x')
 plt.plot(time,r[:,1],label='y')
 plt.plot(time,r[:,2],label='z')
 plt.legend()
+plt.title('Position in eci in m)')
 plt.show()
 
 

@@ -3,7 +3,7 @@ import unittest	#testing library
 import numpy as np
 from ddt import ddt,file_data,unpack,data
 from math import sin,cos
-from constants_1U import W_EARTH, LAUNCHDATE, EQUINOX, v_w_IOO
+from constants_1U import W_EARTH, EPOCH, EQUINOX
 import qnv as qnv
 
 @ddt
@@ -32,7 +32,7 @@ class TestLatLon(unittest.TestCase):
 class TestEcif2Ecef(unittest.TestCase):
 	@data(100.0,210.,323.0,452.0,580.90)
 	def test_orthogonality_of_matrix(self,value):	#Test to check that the rotation matrix is orthogonal
-		t = (LAUNCHDATE - EQUINOX).total_seconds() + value
+		t = (EPOCH - EQUINOX).total_seconds() + value
 
 		v_x = fr.ecif2ecef(np.array([1.0,0.0,0.0]),t)
 		v_y = fr.ecif2ecef(np.array([0.0,1.0,0.0]),t)
@@ -47,7 +47,7 @@ class TestEcif2Ecef(unittest.TestCase):
 		self.assertTrue(np.allclose(I[2,:],[0.,0.,1.]))
 
 	def test_at_zero_time(self):	#Test when ecef and ecif are aligned
-		t = (EQUINOX - LAUNCHDATE).total_seconds()	
+		t = (EQUINOX - EPOCH).total_seconds()	
 		u = np.array([5.0e3,-2.30e3,-5.89e3])
 		v = fr.ecif2ecef(u,t)
 		self.assertTrue(np.allclose(v,u))
@@ -66,7 +66,7 @@ class TestEcif2Ecef(unittest.TestCase):
 		t = 12.63e3
 		u = np.asarray(value)
 		result = fr.ecif2ecef(u,t)
-		t = t + (LAUNCHDATE - EQUINOX).total_seconds() 
+		t = t + (EPOCH - EQUINOX).total_seconds() 
 		v = np.array([cos(W_EARTH*t)*value[0]+sin(W_EARTH*t)*value[1],cos(W_EARTH*t)*value[1]-sin(W_EARTH*t)*value[0],value[2]])
 		self.assertTrue(np.allclose(result,v))
 
@@ -79,7 +79,7 @@ class TestEcef2Ecif(unittest.TestCase):
 		u = np.asarray(value)
 		result = fr.ecef2ecif(u,t)
 		self.assertTrue(type(result),np.ndarray)
-		t = t + (LAUNCHDATE - EQUINOX).total_seconds() 
+		t = t + (EPOCH - EQUINOX).total_seconds() 
 		v = np.array([cos(W_EARTH*t)*value[0]-sin(W_EARTH*t)*value[1],cos(W_EARTH*t)*value[1]+sin(W_EARTH*t)*value[0],value[2]])
 		self.assertTrue(np.allclose(result,v))
 
@@ -122,7 +122,7 @@ class Test_qBI_2qBO(unittest.TestCase):
 		v = np.array([7.0e3,0.,0.])
 		qBI = np.array([1.,0.,0.,0.])
 		expected = np.array([1.,0.,0.,0.])
-		result = fr.qBI_2_qBO(qBI,r,v)
+		result = fr.qBI2qBO(qBI,r,v)
 
 		self.assertTrue(np.allclose(expected ,result))
 
@@ -133,25 +133,39 @@ class Test_qBI_2qBO(unittest.TestCase):
 		r = np.array([0.,0.,7.07e6])
 		v = np.array([0.,7.0e3,0.])
 		expected = (0.5/np.sqrt(2.))*np.array([np.sqrt(3.),np.sqrt(3.),1.,1.])
-		result = fr.qBI_2_qBO(qBI,r,v)
+		result = fr.qBI2qBO(qBI,r,v)
+		
+		self.assertTrue(np.allclose(expected ,result))
+
+class Test_qBO_2qBI(unittest.TestCase):	
+	def test_data2(self):
+		expected = np.array([0.5*np.sqrt(1+0.5*np.sqrt(3.)), -0.5*np.sqrt(1+0.5*np.sqrt(3.)), 
+						-0.25*np.sqrt(2/(2+np.sqrt(3))), 0.25*np.sqrt(2/(2+np.sqrt(3)))])
+		
+		r = np.array([0.,0.,7.07e6])
+		v = np.array([0.,7.0e3,0.])
+		v_q_BO = (0.5/np.sqrt(2.))*np.array([np.sqrt(3.),np.sqrt(3.),1.,1.])
+		result = fr.qBO2qBI(v_q_BO,r,v)
 		
 		self.assertTrue(np.allclose(expected ,result))
 
 @ddt
 class Test_wBIB_2_wBOB(unittest.TestCase):
 	def test_ideal_controlled(self):
+		v_w_IO_o = np.array([0.,0.00106178,0.])
 		qBO = np.array([1.,0.,0.,0.])
-		w_BIB = -qnv.quatRotate(qBO,v_w_IOO)
-		w_BOB = fr.wBIB_2_wBOB(w_BIB,qBO)
+		w_BIB = -qnv.quatRotate(qBO,v_w_IO_o)
+		w_BOB = fr.wBIb2wBOb(w_BIB,qBO,v_w_IO_o)
 		expected = np.array([0.,0.,0.])
 		self.assertTrue(np.allclose(w_BOB,expected))
 
 	@file_data('test-data/test_stationary_body.json')
 	def test_stationary_body(self,value):
+		v_w_IO_o = np.array([0.,0.00106178,0.])
 		qBO = np.asarray(value)
 		w_BIB = np.array([0.,0.,0.])
-		result = fr.wBIB_2_wBOB(w_BIB,qBO)
-		expected = qnv.quatRotate(qBO,v_w_IOO)
+		result = fr.wBIb2wBOb(w_BIB,qBO,v_w_IO_o)
+		expected = qnv.quatRotate(qBO,v_w_IO_o)
 		self.assertTrue(np.allclose(result,expected)) 
 
 if __name__=='__main__':

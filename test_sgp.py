@@ -8,7 +8,7 @@ from constants_1U import G,M_EARTH
 
 class TestOrbitData(unittest.TestCase):
 	#orbit = 1e3*np.genfromtxt('sgp_output.csv',delimiter = ',')
-	orbit = scipy.io.loadmat('SGP_120k.mat')['SGP_120k'].transpose()
+	orbit = np.genfromtxt('sgp_output.csv', delimiter=",")
 	expected_RAAN = 155.9141	#in degrees
 	expected_inc = 98.1258	#in degrees
 	expected_eccentricity = 0.0032873	

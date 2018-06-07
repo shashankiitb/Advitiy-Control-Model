@@ -58,15 +58,15 @@ m9 = m6/np.linalg.norm(m6)
 m10 = m7/np.linalg.norm(m7)
 m11 = m8/np.linalg.norm(m8)
 
-G=qnv.quatMultiplynorm(m1,m2)
+G=qnv.quatMultiplyNorm(m1,m2)
 if (G == m9).all() == 0:
 	flag=0
 
-G=qnv.quatMultiplynorm(m3,m2)
+G=qnv.quatMultiplyNorm(m3,m2)
 if (G == m10).all() == 0:
 	flag=0
 
-G=qnv.quatMultiplynorm(m4,m5)
+G=qnv.quatMultiplyNorm(m4,m5)
 if (G == m11).all() == 0:
 	flag=0
 
