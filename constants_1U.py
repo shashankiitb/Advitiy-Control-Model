@@ -2,7 +2,7 @@
 
 import numpy as np
 import datetime as dt
-from math import sqrt
+from math import sqrt, sin, radians
 
 #--------Earth and environment
 W_EARTH = 7.2921150e-5; # rotation velocity of the earth (rad per second)
@@ -18,7 +18,11 @@ R_SUN = 695500000.0 #Radius of the Sun in meters
 #------------date format yyyy,mm,dd
 LINE1 = ('1 41783U 16059A   18093.17383152  .00000069  00000-0  22905-4 0  9992') #Insert TLE Here
 LINE2 = ('2 41783  98.1258 155.9141 0032873 333.2318  26.7186 14.62910114 80995') 
-
+Incl = LINE2[8:16]
+Inclination = float("".join(map(str, Incl)))
+TPer = LINE2[52:63]
+TiPer = float("".join(map(str, TPer)))
+TimePeriod = 86400/TiPer
 EPOCH = dt.datetime(2018, 4, 03, 12, 50, 19)	#date of epoch of TLE t=0 -- in future should be extracted from TLE
 EQUINOX = dt.datetime(2018, 3, 20, 13, 05, 00)	#day of equinox
 STEPRUT = 1.002738 #sidereal time = stperut * universal time
@@ -37,6 +41,8 @@ Ixz = 0.00000118
 m_INERTIA = np.array([[Ixx, Ixy, Ixz], [Ixy, Iyy, Iyz], [Ixz, Iyz, Izz]])	#actual inertia
 #m_INERTIA = 0.001*np.array([[1.0,0.,0.],[0.,1.,0.],[0.,0.,1.]])	#identity inertia
 m_INERTIA_inv = np.linalg.inv(m_INERTIA)	#inverse of inertia matrix
+J=np.linalg.eig(m_INERTIA)
+Jmin=min(J[0][0],J[0][1],J[0][2])
 
 #Side panel areas
 v_Ax = np.array([0.01,0.,0.])	#area vector perpendicular to x-axis in m^2
@@ -44,6 +50,7 @@ v_Ay = np.array([0.,0.01,0.])	#area vector perpendicular to y-axis in m^2
 v_Az = np.array([0.,0.,0.01])	#area vector perpendicular to z-axis in m^2
 
 #--------Simulation constants
+DELAY_STEP=0.1
 CONTROL_STEP = 2.0	#control cycle time period in second
 MODEL_STEP = 0.1	#step size in environmental data in seconds
 #--------Magnetorquer parameters
@@ -62,7 +69,4 @@ REFLECTIVITY = 0.2
 r_COG_2_COM_b = np.array([-0.067e-2,-0.58e-2,-0.067e-2])
 AERO_DRAG = 2.2
 RHO = 0.218e-12
-
-
-
-
+k = 4*np.pi*(1+sin(radians(Inclination-11)))*Jmin/TimePeriod  #gain constant in B_dot controller
