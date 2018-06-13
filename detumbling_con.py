@@ -8,9 +8,9 @@ code gives output:
 	magnetic moment to be applied in body frame
 '''
 def magMoment(sat): 
-	Bc=sat.getMag_b_m_c()
-	Bp=sat.getMag_b_m_p()
+	v_Bc=sat.getMag_b_m_c()
+	v_Bp=sat.getMag_b_m_p()
 	v_magMoment_body=np.zeros([3])
-	v_magf_dot_body=(Bc-Bp)/cons.DELAY_STEP
-	v_magMoment_body= -cons.k * v_magf_dot_body/np.linalg.norm(Bc)
+	v_magf_dot_body=(Bc-Bp)/cons.MODEL_STEP
+	v_magMoment_body= -cons.k_detumbling * v_magf_dot_body/np.linalg.norm(Bc)
 	return v_magMoment_body
