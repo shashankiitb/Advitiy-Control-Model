@@ -50,7 +50,6 @@ v_Ay = np.array([0.,0.01,0.])	#area vector perpendicular to y-axis in m^2
 v_Az = np.array([0.,0.,0.01])	#area vector perpendicular to z-axis in m^2
 
 #--------Simulation constants
-DELAY_STEP=0.1
 CONTROL_STEP = 2.0	#control cycle time period in second
 MODEL_STEP = 0.1	#step size in environmental data in seconds
 #--------Magnetorquer parameters
@@ -69,4 +68,4 @@ REFLECTIVITY = 0.2
 r_COG_2_COM_b = np.array([-0.067e-2,-0.58e-2,-0.067e-2])
 AERO_DRAG = 2.2
 RHO = 0.218e-12
-k = 4*np.pi*(1+sin(radians(Inclination-11)))*Jmin/TimePeriod  #gain constant in B_dot controller
+k_detumbling = 4*np.pi*(1+sin(radians(Inclination-11)))*Jmin/TimePeriod  #gain constant in B_dot controller (from book by F. Landis Markley)
