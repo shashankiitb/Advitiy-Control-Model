@@ -51,10 +51,10 @@ class Satellite:
 		return self.time
 
 	def setDisturbance_i(self,v_torque_dist_i):	#set disturbance in eci
-		self.dist_i = v_torque_dist_i.copy()
+		self.v_dist_i = v_torque_dist_i.copy()
  
 	def getDisturbance_b(self):	#return disturbance in body
-		return self.dist_i
+		return self.v_dist_i
  
 	def setControl_b(self,v_control):	#set control torque in body
 		self.v_control_b = v_control.copy()
