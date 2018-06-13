@@ -1,49 +1,48 @@
-
+from constants_1U import *
 import numpy as np
-import qnv
 import frames as fs
 
 class Satellite:
 
-	def __init__(self,state0,time0):
+	def __init__(self,v_state0,time0):
 
 		self.setTime(time0)
-		self.setState(state0)		
+		self.setState(v_state0)		
 
-	def setState(self,state1):	#set state
+	def setState(self,v_state1):	#set state
 
-		self.state = state1.copy()
+		self.v_state = v_state1.copy()
 
 	def getState(self):	#returns the state
 
-		return self.state
+		return self.v_state
 
-	def setPos(self,pos):	#set position in eci (earth centered inertial frame)
+	def setPos(self,v_pos):	#set position in eci (earth centered inertial frame)
 
-		self.v_pos_i = pos
+		self.v_pos_i = v_pos.copy()
 
 	def getPos(self):	#return position in eci
 
 		return self.v_pos_i
 
-	def setVel(self,vel):	#set velocity in eci
+	def setVel(self,v_vel):	#set velocity in eci
 
-		self.v_vel_i = vel
+		self.v_vel_i = v_vel.copy()
 
 	def getVel(self):	#get velocity in eci
 
 		return self.v_vel_i
 
-	def setQ(self,q):	#set exact quaternion
+	def setQ(self,v_q):	#set exact quaternion
 
-		self.state[0:4] = q.copy()
+		self.v_state[0:4] = v_q.copy()
 
 	def getQ(self):	#get exact quaternion
-		return self.state[0:4]
+		return self.v_state[0:4]
 
-	def setW(self,omega):	#set omega
+	def setW(self,v_omega):	#set omega
 
-		self.state[4:7] = omega.copy()
+		self.v_state[4:7] = v_omega.copy()
 
 	def setTime(self,y):	#set time
 		self.time = y
@@ -53,53 +52,51 @@ class Satellite:
 
 	def setDisturbance_b(self,v_torque_dist_i):	#set disturbance in eci
 		self.dist_i = v_torque_dist_i.copy()
-
+ 
 	def getDisturbance_b(self):	#return disturbance in body
 		return self.dist_i
-
-	def setControl_b(self,v_control_b):	#set control torque in body
-		self.control_body = v_control_b.copy()
+ 
+	def setControl_b(self,v_control):	#set control torque in body
+		self.v_control_b = v_control.copy()
 
 	def getControl_b(self): #return control torque in body
-		return self.control_body
+		return self.v_control_b
 
 	def setSun_i(self,v_sv_i):	#set sun vector in eci
-		self.sv_i = v_sv_i.copy()	
+		self.v_sun_i = v_sv_i.copy()	
 
 	def setMag_i(self,v_mag_i):	#set mag in eci
-		self.mag_i = v_mag_i.copy()
+		self.v_mag_i = v_mag_i.copy()
 
 	def getSun_i(self):	#return sun in eci
-		return self.sv_i
+		return self.v_sun_i
 
 	def getMag_i(self):	#return mag in eci
-		return self.mag_i
+		return self.v_mag_i
 
 	def getSun_o(self):	#get sun vector in orbit
-		v_sv_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.sv_i)
-		return	v_sv_o
+		v_sun_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.v_sun_i)
+		return	v_sun_o
 
 	def getMag_o(self):	#return mag in orbit
-		v_mag_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.mag_i)
+		v_mag_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.v_mag_i)
 		return	v_mag_o
-
-	def setSun_b_m(self,v_sv_b_m):	#set sunsensor measurement in body
-		self.sv_b_m = v_sv_b_m.copy()
-
-	def setMag_b_m_p(self,v_mag_b_m):	#set previous mag measurement in body
-		self.mag_b_m_p = v_mag_b_m.copy()
 
 	def setMag_b_m_c(self,v_mag_b_m):  #set current mag measurement in body
 		self.mag_b_m_c = v_mag_b_m.copy()
-
-	def getSun_b_m(self):	#return sunsensor measurement in body
-		return self.sv_b_m
+	def setMag_b_m_p(self,v_mag_b_m):	#set previous mag measurement in body
+		self.mag_b_m_p = v_mag_b_m.copy()
 
 	def getMag_b_m_c(self):	#return mag measurement in body
 		return self.mag_b_m_c
-
 	def getMag_b_m_p(self):	#return mag measurement in body
 		return self.mag_b_m_p
+
+	def getSun_b_m(self):	#return sunsensor measurement in body
+		return self.v_sun_b_m
+
+	def getMag_b_m(self):	#return mag measurement in body
+		return self.v_mag_b_m
 
 	def setQUEST(self,v_q_BO_m):	#set quest quaternion
 		self.quatEstimate = v_q_BO_m.copy()
@@ -107,18 +104,18 @@ class Satellite:
 	def getQUEST(self):	#return quest quaternon
 		return self.quatEstimate
 
-	def setOmega_m(self,v_w_bob_m):
-		self.omega_m = v_w_bob_m.copy()
+	def setOmega_m(self,omega_m):
+		self.v_w_BO_b_m = omega_m.copy()
 
 	def getOmega_m(self):
-		return self.omega_m
-
-	def getLight(self):
-		return self.light
+		return self.v_w_BO_b_m
 
 	def setLight(self,flag):
 		self.light = flag
 
+	def getLight(self):
+		return self.light
+
 	def getW(self):
 
-		return self.state[4:7]
+		return self.v_state[4:7]
