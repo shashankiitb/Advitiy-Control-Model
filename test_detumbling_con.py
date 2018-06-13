@@ -5,7 +5,7 @@ import unittest
 from ddt import ddt,file_data,unpack
 
 @ddt
-class Testquatrotate(unittest.TestCase):
+class TestmagMoment(unittest.TestCase):
         @file_data("test-data/test_detumbling_con.json")
         @unpack
         
@@ -15,7 +15,7 @@ class Testquatrotate(unittest.TestCase):
                 mag2=np.asarray(value[1])
                 mag_exp=np.asarray(value[2])
 
-                iniState=np.zeros([7])
+                iniState=np.array([1.,0.,0.,0.,0.,0.,0.])
                 s = sat.Satellite(iniState,0)
                 s.setMag_b_m_p(mag1)
                 s.setMag_b_m_c(mag2)
