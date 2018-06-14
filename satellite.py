@@ -78,9 +78,9 @@ class Satellite:
 		v_sun_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.v_sun_i)
 		return	v_sun_o
 
-	def getMag_o(self):	#return mag in orbit
-		v_mag_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.v_mag_i)
-		return	v_mag_o
+	def getMag_i(self):	#return mag in orbit
+		#v_mag_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.v_mag_i)
+		return	self.v_mag_i
 	
 	def setSun_b_m(self,v_sv_b_m):	#set sunsensor measurement in body
 		self.v_sun_b_m = v_sv_b_m.copy()
