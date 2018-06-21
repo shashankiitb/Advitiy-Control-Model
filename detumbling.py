@@ -63,7 +63,7 @@ r=np.linalg.norm(m_sgp_output_i[0,1:4])
 v_w0_BIB = -np.array([0., np.sqrt(G*M_EARTH/(r)**3), 0.])
 v_state[0,:] = np.hstack((v_q0_BI,v_w0_BIB))
 v_q_BO[0,:] = v_q0_BO
-v_w_BOB[0,:] = fs.wBIB_2_wBOB(v_w0_BIB,v_q_BO[0,:],(-v_w0_BIB))
+v_w_BOB[0,:] = fs.wBIb2wBOb(v_w0_BIB,v_q_BO[0,:],(-v_w0_BIB))
 euler[0,:] = qnv.quat2euler(v_q_BO[0,:])
 
 #Make satellite object
@@ -96,9 +96,9 @@ for  i in range(0,N-1):
 	Advitiy.setMag_b_m_c(v_magnetic_field_b_c)
 	Advitiy.setMag_i(m_magnetic_field_i[i+1,1:4])
 
-	v_torque_gg_b = dist.gg_torque(Advitiy).copy()
-	v_torque_aero_b = dist.aero_torque(Advitiy).copy()
-	v_torque_solar_b = dist.solar_torque(Advitiy).copy()
+	v_torque_gg_b = dist.ggTorqueb(Advitiy).copy()
+	v_torque_aero_b = dist.aeroTorqueb(Advitiy).copy()
+	v_torque_solar_b = dist.solarTorqueb(Advitiy).copy()
 	v_torque_total_b =(v_torque_gg_b + v_torque_aero_b + v_torque_solar_b)
 	Advitiy.setDisturbance_i(v_torque_total_b)
 	torque_dist[i,:] = v_torque_total_b.copy()
@@ -113,17 +113,17 @@ for  i in range(0,N-1):
 
 	#Use rk4 solver to calculate the state for next step
 	for j in range(0,int(MODEL_STEP/h)):		
-		v_state_next = sol.rk4_quaternion(Advitiy,x_dot,h)
+		v_state_next = sol.rk4Quaternion(Advitiy,x_dot,h)
 		Advitiy.setState(v_state_next.copy())
 		Advitiy.setTime(t0 + i*MODEL_STEP + (j+1)*h)
 
 	v_state[i+1,:] = v_state_next.copy()
 	
 	#Calculate observable quantities
-	v_q_BO[i+1,:] = fs.qBI_2_qBO(v_state_next[0:4],m_sgp_output_i[i+1,1:4],m_sgp_output_i[i+1,4:7])
+	v_q_BO[i+1,:] = fs.qBI2qBO(v_state_next[0:4],m_sgp_output_i[i+1,1:4],m_sgp_output_i[i+1,4:7])
 	r=np.linalg.norm(m_sgp_output_i[i+1,1:4])
 	v_w0_BIB = -np.array([0., np.sqrt(G*M_EARTH/(r)**3), 0.])
-	v_w_BOB[i+1,:] = fs.wBIB_2_wBOB(v_state_next[4:7],v_q_BO[i+1,:],(-v_w0_BIB))
+	v_w_BOB[i+1,:] = fs.wBIb2wBOb(v_state_next[4:7],v_q_BO[i+1,:],(-v_w0_BIB))
 	euler[i+1,:] = qnv.quat2euler(v_q_BO[i+1,:])
 
 #save the data files
