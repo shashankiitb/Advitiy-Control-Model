@@ -59,7 +59,7 @@ TORQUER_Az = 0.07**2	#Area of torquer monted on x-y plane
 #Disturbance model constants
 SOLAR_PRESSURE = 4.56e-6	#in N/m^2
 REFLECTIVITY = 0.2
-r_COG_2_COM_b = np.array([-0.067e-2,-0.58e-2,-0.067e-2])
+r_COG_2_COM_b = np.array([0.123e-2,-0.123e-2,-0.244e-2])
 AERO_DRAG = 2.2
 RHO = 0.218e-12
 
