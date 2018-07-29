@@ -51,9 +51,9 @@ class Test_GetLLA(unittest.TestCase):
 
 	@data(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)	
 	def test_GetLLA_postdata(self,value):
-		theta = W_EARTH*(self.t0 + self.sgpoutputTest[int(value)-1,0]) #in radian
+		theta = W_EARTH*(self.t0 + self.sgpoutputTest[int(value),0]) #in radian
 		m_DCM = np.array([[cos(theta), sin(theta), 0.], [-1*sin(theta), cos(theta),0.], [0.,0.,1.]])
-		v_x_e = np.dot(m_DCM,self.sgpoutputTest[int(value)-1,1:4])
+		v_x_e = np.dot(m_DCM,self.sgpoutputTest[int(value),1:4])
 		if (v_x_e[2] >= 0):
 			self.LLAdata[0] = acos(((v_x_e[0]**2 + v_x_e[1]**2)/(v_x_e[0]**2 + v_x_e[1]**2 + v_x_e[2]**2))**0.5) * 180./pi
 		else:
@@ -70,8 +70,8 @@ class Test_GetLLA(unittest.TestCase):
 			else:
 				self.LLAdata[1] = -acos(v_x_e[0]/((v_x_e[0]**2 + v_x_e[1]**2)**0.5))*90./(pi/2) 
 
-		self.LLAdata[2] = np.linalg.norm(self.sgpoutputTest[int(value)-1,1:4]) - R_EARTH
-		v_result = self.LLATest[int(value)-1,1:4]
+		self.LLAdata[2] = np.linalg.norm(self.sgpoutputTest[int(value),1:4]) - R_EARTH
+		v_result = self.LLATest[int(value),1:4]
 		
 		self.assertTrue(np.allclose(self.LLAdata,v_result))
 
