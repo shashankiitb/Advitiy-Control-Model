@@ -57,8 +57,6 @@ class Satellite:
 
 		return self.v_dist_b
 
-
-
 	def setControl_b(self,v_control):	#set control torque in body
 		self.v_control_b = v_control.copy()
 

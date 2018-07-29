@@ -140,27 +140,33 @@ def wBIb2wBOb(v_w_BI_b,v_q_BO,v_w_IO_o):
 	return v_w_BI_b + qnv.quatRotate(v_q_BO,v_w_IO_o)
 
 
-
-
-'''
-
-def ned2ecef(x,lat,lon):
+def ned2ecef(v,lat,lon):
 	#rotate vector from North-East-Down frame to ecef
-	# lat should be -90 to 90
-	# lon should be 0 to 360
-	v = np.array([-x[2], -x[0], x[1]]) #convert to spherical polar r theta phi
-	
+	#Input:
+	#	lat: latittude in degrees ranges from -90 to 90
+	#	lon: longitude in degrees ranges from (-180,180]	 
+	if lat == 90 or lat == -90:
+		raise ValueError('Latittude value +/-90 occured. NED frame is not defined at north and south pole !!')
 	theta = -lat + 90. #in degree, polar angle (co-latitude)
-	phi = lon #in degree, azimuthal angle
+
+	if lon<0:
+		phi = 360. - abs(lon)
+	else:
+		phi = lon #in degree, azimuthal angle
 	theta = radians(theta)
 	phi = radians(phi)
 
-	DCM = np.array([[sin(theta)*cos(phi), cos(theta)*cos(phi), -sin(phi)],\
-		[sin(theta)*sin(phi), cos(theta)*sin(phi), cos(phi)],\
-		[cos(theta), -sin(theta), 0.]]) #for spherical to cartesian
-
-	y = np.dot(DCM,v)
+	m_DCM_n2e = np.array([[ -cos(theta)*cos(phi),	-sin(phi),	-sin(theta)*cos(phi)],
+						[	-cos(theta)*sin(phi),	cos(phi),	-sin(theta)*sin(phi)],
+						[	sin(theta),	0.0,	-cos(theta)]])
+	
+	y = np.dot(m_DCM_n2e,v)
 
 	return y
 
-'''
+def wBOb2wBIb(v_w_BO_b,v_q_BO,v_w_IO_o):
+	#input: angular velocity of body wrt ecif in body frame, unit quaternion which rotates orbit vector to body frame
+	#		angular velocity of ecif wrt orbit frame in orbit frame
+	#output: angular velocity of body frame wrt orbit frame in body frame
+	
+	return v_w_BO_b - qnv.quatRotate(v_q_BO,v_w_IO_o)
