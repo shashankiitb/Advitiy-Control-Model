@@ -118,7 +118,7 @@ for  i in range(0,N-1):
 
 #save the data files
 os.chdir('Logs/')
-#os.mkdir('polar-identity-no-dist')
+os.mkdir('polar-identity-no-dist')
 os.chdir('polar-identity-no-dist')
 np.savetxt('position.csv',m_sgp_output_i[:,1:4], delimiter=",")
 np.savetxt('velocity.csv',m_sgp_output_i[:,4:7], delimiter=",")
