@@ -1,111 +1,127 @@
 import numpy as np
 import math
 
-def quatInv(q1): #to get inverse of a quaternion
-	qi = np.zeros(4)
-	qi[0] = q1[0]
-	qi[1:4] = -1*q1[1:4].copy()
-	return qi
+def quatInv(v_q1): #to get inverse of a quaternion
+	v_qi = np.zeros(4)
+	v_qi[0] = v_q1[0]
+	v_qi[1:4] = -1*v_q1[1:4].copy()
+	return v_qi
 
-def quatMultiplynorm(q1,q2): #returns quaternion product (product is a unit quaternion)
+def quatMultiplyNorm(v_q1,v_q2): #returns quaternion product (product is a unit quaternion)
 
-	a1 = q1[0:1].copy()
-	a2 = q2[0:1].copy()
+	a1 = v_q1[0:1].copy()
+	a2 = v_q2[0:1].copy()
 	
-	b1 = (q1[1:4].copy())
-	b2 = (q2[1:4].copy())
+	v_b1 = (v_q1[1:4].copy())
+	v_b2 = (v_q2[1:4].copy())
 	
-	a = a1*a2 - np.dot(b1,b2)
-	b = a1*b2 + a2*b1 + np.cross(b1,b2)
-	q = np.hstack((a,b))
+	a = a1*a2 - np.dot(v_b1,v_b2)
+	v_b = a1*v_b2 + a2*v_b1 + np.cross(v_b1,v_b2)
+	v_q = np.hstack((a,v_b))
 	
-	q = q/np.linalg.norm(q)
-	return q
+	v_q = v_q/np.linalg.norm(v_q)
+	return v_q
 
-def quatMultiplyUnnorm(q1,q2): #returns quaternion product (product is not a unit quaternion)
+def quatMultiplyUnnorm(v_q1,v_q2): #returns quaternion product (product is not a unit quaternion)
 
-	a1 = q1[0:1].copy()
-	a2 = q2[0:1].copy()
+	a1 = v_q1[0:1].copy()
+	a2 = v_q2[0:1].copy()
 	
 
-	b1 = (q1[1:4].copy())
-	b2 = (q2[1:4].copy())
+	v_b1 = (v_q1[1:4].copy())
+	v_b2 = (v_q2[1:4].copy())
 	
-	a = a1*a2 - np.dot(b1,b2)
-	b = a1*b2 + a2*b1 + np.cross(b1,b2)
-	q = np.hstack((a,b))
-	return q
+	a = a1*a2 - np.dot(v_b1,v_b2)
+	v_b = a1*v_b2 + a2*v_b1 + np.cross(v_b1,v_b2)
+	v_q = np.hstack((a,v_b))
+	return v_q
 
-def quatRotate(q,x): #rotates vecctor x by quaternion q
+def quatRotate(v_q,v_x): #rotates vector x by quaternion q
 	
-	if np.count_nonzero(x) == 0:
-		return x
-	qi = quatInv(q)
-	y = np.hstack(([0.],x.copy()))
-	y = quatMultiplyUnnorm(q,y)
-	y = quatMultiplyUnnorm(y,qi)
-	x2 = y[1:4]
-	return x2
+	if np.count_nonzero(v_x) == 0:
+		return v_x
+	v_qi = quatInv(v_q)
+	v_y = np.hstack(([0.],v_x.copy()))
+	v_y = quatMultiplyUnnorm(v_q,v_y)
+	v_y = quatMultiplyUnnorm(v_y,v_qi)
+	v_x2 = v_y[1:4]
+	return v_x2
 
-def quatDer1(q,w): # w is angular velocity of body wrt inertial frame in body frame. q transforms inertial frame vector to body frame
+def quatDerBI(v_q,v_w): 	# w is angular velocity of body wrt inertial frame in body frame. 
+						#q transforms inertial frame vector to body frame
 
-	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,w[2],-w[1]],[w[1],-w[2],0,w[0]],[w[2],w[1],-w[0],0]])
-	q_dot = 0.5*np.dot(W,q)
+	m_W = np.array([[0.,-v_w[0],-v_w[1],-v_w[2]],[v_w[0],0.,v_w[2],-v_w[1]],[v_w[1],-v_w[2],0.,v_w[0]],[v_w[2],v_w[1],-v_w[0],0.]])
+	v_q_dot = 0.5*np.dot(m_W,v_q)
+
+	return v_q_dot
+
+def quatDerBO(v_q,omega1):   #q transforms orbit frame vector to body frame
+								#omega1 = v_q_BI_b + R*v_q_BO_b
+								#R is rotation matrix corresponding to v_q_BO
+
+	W = np.array([[-np.dot(v_q[1:4],omega1)],[v_q[0]*omega1+np.cross(v_q[1:4],omega1)]])
+	q_dot = 0.5*W
 
 	return q_dot
-'''
-def quatDer2(q,w): #if w is in inertial frame, q takes from body to inertial
-	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,-w[2],w[1]],[w[1],w[2],0,-w[0]],[w[2],-w[1],w[0],0]])
-	q_dot = 0.5*np.dot(W,q)
 
-	return q_dot
-'''
-def rotm2quat(A): #returns a quaternion whose scalar part is positive to keep angle between -180 to +180 deg.
+def rotm2quat(m_A): #returns a quaternion whose scalar part is positive to keep angle between -180 to +180 deg.
 
-	q0 = 1 + np.trace(A)
-	q1 = 1 + A[0,0] - A[1,1] - A[2,2]
-	q2 = 1 - A[0,0] + A[1,1] - A[2,2]
-	q3 = 1 - A[0,0] - A[1,1] + A[2,2]
+	q0 = 1 + np.trace(m_A)
+	q1 = 1 + m_A[0,0] - m_A[1,1] - m_A[2,2]
+	q2 = 1 - m_A[0,0] + m_A[1,1] - m_A[2,2]
+	q3 = 1 - m_A[0,0] - m_A[1,1] + m_A[2,2]
 	qm = max(q0,q1,q2,q3)
 	if(qm==q0):
 		q0 = math.sqrt(q0)/2
-		q1 = (A[1,2] - A[2,1])/(4*q0)
-		q2 = (A[2,0] - A[0,2])/(4*q0)
-		q3 = (A[0,1] - A[1,0])/(4*q0)
+		q1 = (m_A[1,2] - m_A[2,1])/(4*q0)
+		q2 = (m_A[2,0] - m_A[0,2])/(4*q0)
+		q3 = (m_A[0,1] - m_A[1,0])/(4*q0)
 
 	elif(qm==q1):
 		q1 = math.sqrt(q1)/2
-		q0 = (A[1,2] - A[2,1])/(4*q1)
-		q2 = (A[0,1] + A[1,0])/(4*q1)
-		q3 = (A[0,2] + A[2,0])/(4*q1)
+		q0 = (m_A[1,2] - m_A[2,1])/(4*q1)
+		q2 = (m_A[0,1] + m_A[1,0])/(4*q1)
+		q3 = (m_A[0,2] + m_A[2,0])/(4*q1)
 
 	elif(qm==q2):
 		q2 = math.sqrt(q2)/2
-		q0 = (A[2,0] - A[0,2])/(4*q2)
-		q1 = (A[0,1] + A[1,0])/(4*q2)
-		q3 = (A[1,2] + A[2,1])/(4*q2)
+		q0 = (m_A[2,0] - m_A[0,2])/(4*q2)
+		q1 = (m_A[0,1] + m_A[1,0])/(4*q2)
+		q3 = (m_A[1,2] + m_A[2,1])/(4*q2)
 
 	else: 
 		q3 = math.sqrt(q3)/2
-		q0 = (A[0,1] - A[1,0])/(4*q3)
-		q1 = (A[0,2] + A[2,0])/(4*q3)
-		q2 = (A[1,2] + A[2,1])/(4*q3)
+		q0 = (m_A[0,1] - m_A[1,0])/(4*q3)
+		q1 = (m_A[0,2] + m_A[2,0])/(4*q3)
+		q2 = (m_A[1,2] + m_A[2,1])/(4*q3)
 
-	q = np.array([q0,q1,q2,q3])
-	q = q/np.linalg.norm(q)
+	v_q = np.array([q0,q1,q2,q3])
+	v_q = v_q/np.linalg.norm(v_q)
 	
-	return q
+	return v_q
 
-def quat2rotm(q): #given a quaternion it returns a rotation matrix
-	q1 = q[1]
-	q2 = q[2]
-	q3 = q[3]
-	q0 = q[0]
+def quat2rotm(v_q): #given a quaternion it returns a rotation matrix
+	q1 = v_q[1]
+	q2 = v_q[2]
+	q3 = v_q[3]
+	q0 = v_q[0]
 
-	M1 = 2* np.array([[-q2**2 - q3**2,q1*q2,q1*q3],[q1*q2,-q1**2 - q3**2,q2*q3],[q1*q3,q2*q3,-q1**2-q2**2]])
-	M2 = -2*q0*np.array([[0,-q3,q2],[q3,0,-q1],[-q2,q1,0]])
-	M3 = np.identity(3)
-	return M1 + M2 + M3
+	m_M1 = 2* np.array([[-q2**2 - q3**2,q1*q2,q1*q3],[q1*q2,-q1**2 - q3**2,q2*q3],[q1*q3,q2*q3,-q1**2-q2**2]])
+	m_M2 = -2*q0*np.array([[0,-q3,q2],[q3,0,-q1],[-q2,q1,0]])
+	m_M3 = np.identity(3)
+	return m_M1 + m_M2 + m_M3
+
+
+def quat2euler(v_q):
+	#input quaternion
+	#output euler angles: roll, pitch, yaw in degrees
+	m_M = quat2rotm(v_q)
+
+	yaw = math.atan2(m_M[0,1],m_M[0,0])
+	pitch = -math.asin(m_M[0,2])
+	roll = math.atan2(m_M[1,2],m_M[2,2])
+
+	return (180./np.pi)*np.array([roll,pitch,yaw])
 
 '''
 def skew(v):
