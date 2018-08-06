@@ -58,8 +58,9 @@ def quatDerBI(v_q,v_w): 	# w is angular velocity of body wrt inertial frame in b
 def quatDerBO(v_q,omega1):   #q transforms orbit frame vector to body frame
 								#omega1 = v_q_BI_b + R*v_q_BO_b
 								#R is rotation matrix corresponding to v_q_BO
-
-	W = np.array([[-np.dot(v_q[1:4],omega1)],[v_q[0]*omega1+np.cross(v_q[1:4],omega1)]])
+	W_vector = v_q[0]*omega1+np.cross(v_q[1:4],omega1)
+	W_scalar = -np.dot(v_q[1:4],omega1)
+	W = np.hstack((W_scalar,W_vector))
 	q_dot = 0.5*W
 
 	return q_dot
