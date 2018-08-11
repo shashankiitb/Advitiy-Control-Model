@@ -18,6 +18,7 @@ LINE1 = ('1 41783U 16059A   18093.17383152  .00000069  00000-0  22905-4 0  9992'
 LINE2 = ('2 41783  98.1258 155.9141 0032873 333.2318  26.7186 14.62910114 80995') 
 Incl = LINE2[8:16]
 Inclination = float("".join(map(str, Incl)))
+
 TPer = LINE2[52:63]
 TiPer = float("".join(map(str, TPer)))
 TimePeriod = 86400/TiPer
@@ -68,4 +69,5 @@ REFLECTIVITY = 0.2
 r_COG_2_COM_b = np.array([1.23e-3,-1.23e-3,-2.44e-3])
 AERO_DRAG = 2.2
 RHO = 0.218e-12
+
 k_detumbling = 4*np.pi*(1+sin(radians(Inclination-11)))*Jmin/TimePeriod    #gain constant in B_dot controller (from book by F. Landis Markley)
