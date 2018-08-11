@@ -88,20 +88,21 @@ class TestSolver(unittest.TestCase):
 		mySat.setDisturbance_b(np.array([10e-10,-4e-6,-3e-5]))
 		mySat.setControl_b(np.array([1e-5,1e-5,-8e-4]))
 		
+		r=np.linalg.norm(mySat.getPos())
+		v_w_IO_o = np.array([0., np.sqrt(G*M_EARTH/(r)**3), 0.]) #angular velocity of orbit frame wrt inertial frame in orbit frame
+		
+		v_w_BO_b = frames.wBIb2wBOb(np.array([0.1,-0.05,-0.3]),v_q_BO,v_w_IO_o)
+		
 		x1 = rk4Quaternion(mySat,x_dot_BO,h)
 		mySat.setState(x1.copy())
 		mySat.setTime(t0+h)
-
-		r=np.linalg.norm(mySat.getPos())
-		v_w_IO_o = np.array([0., np.sqrt(G*M_EARTH/(r)**3), 0.]) #angular velocity of orbit frame wrt inertial frame in orbit frame
-
-		k1 = h*np.array( [8.29027064e-05,  1.14224820e-04,  6.36427108e-05, -4.14888036e-05, 6.27846370e-06,  2.97359797e-06, -5.62634478e-04])
-		k2 = h*x_dot_BO(mySat, t0+0.5*h, np.hstack((v_q_BO,np.array([ 0.09867149, -0.05026119, -0.30084096])))+0.5*k1)
-		print(k2)
-		k3 = h*x_dot_BO(mySat, t0+0.5*h, np.hstack((v_q_BO,np.array([ 0.09867149, -0.05026119, -0.30084096])))+0.5*k2)
-		k4 = h*x_dot_BO(mySat, t0+h, np.hstack((v_q_BO,np.array([ 0.09867149, -0.05026119, -0.30084096])))+k3)
 		
-		error_state = np.hstack((v_q_BO,np.array([ 0.09867149, -0.05026119, -0.30084096]))) + (1./6.)*(k1 + 2.*k2 + 2.*k3 + k4)
+		k1 = h*x_dot_BO(mySat, t0+0.5*h, np.hstack((v_q_BO,v_w_BO_b)))
+		k2 = h*x_dot_BO(mySat, t0+0.5*h, np.hstack((v_q_BO,v_w_BO_b))+0.5*k1)
+		k3 = h*x_dot_BO(mySat, t0+0.5*h, np.hstack((v_q_BO,v_w_BO_b))+0.5*k2)
+		k4 = h*x_dot_BO(mySat, t0+h, np.hstack((v_q_BO,v_w_BO_b))+k3)
+		
+		error_state = np.hstack((v_q_BO,v_w_BO_b)) + (1./6.)*(k1 + 2.*k2 + 2.*k3 + k4)
 		expected = np.hstack((frames.qBO2qBI(error_state[0:4],np.array([1e6,53e5,0.]),np.array([5.60,-5.0,0.0])),frames.wBOb2wBIb(error_state[4:7],error_state[0:4],v_w_IO_o)))
 		self.assertTrue(np.allclose(expected,mySat.getState()))
 
