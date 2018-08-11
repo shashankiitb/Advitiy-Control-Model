@@ -1,37 +1,48 @@
-#to understand the names of variable please refer to lightmodel
 import numpy as np
-from datetime import *
-import matplotlib.pyplot as plt
-Rearth = 6378164.0 #Radius of Earth in meters
-AU = 159597870610.0 #Distance between sun and earth in meters
-Rsun = 695500000.0 #Radius of the Sun in meters
-sgp_output=np.genfromtxt('sgp_output.csv', delimiter=",")
-si_output=np.genfromtxt('si_output.csv', delimiter=",")
-T = sgp_output[0,:] #storing first element as time, gives a row vector
-positionvectorarray = sgp_output[1:4,:]  #Storing the position vector of satellite given by sgp4 model
+from constants_1U import R_EARTH, AU, R_SUN
+'''
+    This code generates light model output file for given orbit
+    Input: orbit data file, sun vector data file
+    output: N*2 array data file 
+    flag = 0 eclipse
+    flag = 1 light
+    flag = 0.5 penumbra
+    For details of model refer: 
+'''
+
+
+#Read SGP and sun-model data
+m_sgp_output = np.genfromtxt('sgp_output.csv', delimiter=",")
+m_si_output = np.genfromtxt('si_output.csv', delimiter=",")
+T = m_sgp_output[:,0] #storing first element as time
+
 N = len(T)
-light_output =np.empty([2,N])
-Dumbra = AU*Rearth / (Rsun - Rearth) #distance from centre of the earth to the vertex of the umbra cone
-Dpenumbra = AU*Rearth / (Rsun + Rearth) #distance from centre of the earth to the vertex of the penumbra cone
-alpha = np.arcsin(Rearth / Dumbra) #Half the aperture of the cone made by umbra
-beta = np.arcsin(Rearth / Dpenumbra) #Half the aperture of the cone made by penumbra
-print
+m_light_output = np.zeros((N,2))
+
+r_umbra = AU*R_EARTH / (R_SUN - R_EARTH) #distance from vertex of the umbra cone to center of the earth
+r_penumbra = AU*R_EARTH / (R_SUN + R_EARTH) #distance from vertex of the penumbra cone to center of the earth
+alpha = np.arcsin(R_EARTH / r_umbra) #Half the aperture of the cone made by umbra (in radians)
+beta = np.arcsin(R_EARTH / r_penumbra) #Half the aperture of the cone made by penumbra (in radians)
+
 for i in range(N):
-    position_satellite = positionvectorarray[:,i] 
-    sunvector = si_output[1:4,i]
-    #angle between sun light vector and satellite position vector in ECI frame
-    angle_sat = np.arccos(np.dot(position_satellite, sunvector) /np.linalg.norm(position_satellite) )
-    #angle between the vector from the vertex of the umbra cone to satellite and sun vector
-    parameter_umbra = np.arccos((np.dot((position_satellite + Dumbra*sunvector), sunvector)) / np.linalg.norm(position_satellite + Dumbra*sunvector))
-    #angle between the vector from the vertex of the peumbra cone to satellite and negative sun vector
-    parameter_penumbra =np.arccos((np.dot((position_satellite - Dpenumbra*sunvector), -sunvector)) / np.linalg.norm(position_satellite - Dpenumbra*sunvector))
+    v_pos_i = m_sgp_output[i,1:4].copy()  #position of satellite in ECI
+    v_sun_i = m_si_output[i,1:4].copy()   #sun vector in ECI
+    #angle between sun-vector and satellite position vector in ECI frame
+    theta = np.arccos(np.dot(v_pos_i, v_sun_i) /np.linalg.norm(v_pos_i) )
+    #angle between the sunvector and vector from the vertex of the umbra cone to satellite
+    theta_u = np.arccos((np.dot((v_pos_i + r_umbra*v_sun_i), v_sun_i)) / np.linalg.norm(v_pos_i + r_umbra*v_sun_i))
+    #angle between the negative sunvector and vector from the vertex of the penumbra cone to satellite
+    theta_p =np.arccos((np.dot((v_pos_i - r_penumbra*v_sun_i), -v_sun_i)) / np.linalg.norm(v_pos_i - r_penumbra*v_sun_i))
+    
     #Boolean to store whether satellite is in light or dark. 1 implies satellite is in light.
-    if (angle_sat >= np.pi/2 + alpha) & (parameter_umbra <= alpha):
+    if (theta >= np.pi/2 + alpha) & (theta_u <= alpha):
         flag = 0
-    elif (angle_sat >=np.pi/2 - beta) & (parameter_umbra > alpha) & (parameter_penumbra <= beta):
+    elif (theta >= np.pi/2 - beta)  & (theta_p <= beta):
         flag = 0.5
     else:
-    	flag=1
-    light_output[0,i] = T[i]
-    light_output[1,i] = flag
-np.savetxt("light_output.csv", light_output, delimiter=',')
+    	flag = 1
+
+    m_light_output[i,0] = T[i]
+    m_light_output[i,1] = flag
+    
+np.savetxt("light_output.csv", m_light_output, delimiter=',')

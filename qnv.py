@@ -48,6 +48,7 @@ def quatRotate(v_q,v_x): #rotates vector x by quaternion q
 	return v_x2
 
 def quatDerBI(v_q,v_w): 	# w is angular velocity of body wrt inertial frame in body frame. 
+
 						#q transforms inertial frame vector to body frame
 
 	m_W = np.array([[0.,-v_w[0],-v_w[1],-v_w[2]],[v_w[0],0.,v_w[2],-v_w[1]],[v_w[1],-v_w[2],0.,v_w[0]],[v_w[2],v_w[1],-v_w[0],0.]])

@@ -42,6 +42,6 @@ class TestAeroDrag(unittest.TestCase):
 		sat.setVel(np.array([0,2e3,6e3]))
 		result = dist.aero_torque(sat)
 		print result
-
+		
 if __name__=="__main__":
 	unittest.main(verbosity=2)

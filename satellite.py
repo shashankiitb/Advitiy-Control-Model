@@ -1,4 +1,5 @@
 from constants_1U import *
+
 import numpy as np
 import frames as fs
 
@@ -56,10 +57,10 @@ class Satellite:
 		return self.time
 
 	def setDisturbance_b(self,v_torque_dist_b):	#set disturbance in body
-		self.v_dist_i = v_torque_dist_b.copy()
+		self.v_dist_b = v_torque_dist_b.copy()
  
 	def getDisturbance_b(self):	#return disturbance in body
-		return self.v_dist_i
+		return self.v_dist_b
  
 	def setControl_b(self,v_control):	#set control torque in body
 		self.v_control_b = v_control.copy()
@@ -86,7 +87,7 @@ class Satellite:
 	def getMag_i(self):	#return mag in orbit
 		#v_mag_o = fs.ecif2orbit(self.v_pos_i,self.v_vel_i,self.v_mag_i)
 		return	self.v_mag_i
-	
+
 	def setSun_b_m(self,v_sv_b_m):	#set sunsensor measurement in body
 		self.v_sun_b_m = v_sv_b_m.copy()
 	def getSun_b_m(self):	#return sunsensor measurement in body
@@ -95,8 +96,8 @@ class Satellite:
 	def setMag_b_m_c(self,v_mag_b_m):  #set current mag measurement in body
 		self.mag_b_m_c = v_mag_b_m.copy()
 	def setMag_b_m_p(self,v_mag_b_m):	#set previous mag measurement in body
-		self.mag_b_m_p = v_mag_b_m.copy()
-
+		self.mag_b_m_p
+    
 	def getMag_b_m_c(self):	#return mag measurement in body
 		return self.mag_b_m_c
 	def getMag_b_m_p(self):	#return mag measurement in body
@@ -123,3 +124,4 @@ class Satellite:
 	def getW(self):
 
 		return self.v_state[4:7]
+ 

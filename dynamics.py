@@ -1,9 +1,9 @@
-import numpy as np                                     
+import numpy as np                                 
 from constants_1U import m_INERTIA,m_INERTIA_inv, G, M_EARTH
 from qnv import quatDerBI, quat2rotm, quatDerBO
 import frames
 #-----------------------------------------------------------------------------------------------------------------------------
-def x_dot_BI(sat,t,v_x):    #need m_INERTIA 
+def x_dot_BI(sat,t,v_x):    #need m_INERTIA
     '''
         This function calculates the derivative of quaternion (q_BI)
         and angular velocity w_BIB
