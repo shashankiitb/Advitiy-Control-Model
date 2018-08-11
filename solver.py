@@ -5,7 +5,7 @@ from constants_1U import G, M_EARTH
 def rk4Quaternion(sat,f,h): #This is Runge Kutta-4 solver for ordinary differential equation.
 	'''
 		Input is satellite object, f (derivative of state vector (quaternion and angular velocity)) and integration step size
-		It returns value of state at next time (after a time step of h) (x(t+h)) using f and value of state at current time x(t)
+		It returns value of state at next time (after a time step of h) (x(t+h)) using f and value of state at current time (x(t))
 	'''
 	v_state_exact_0 = sat.getState()	#state at t = t0	
 	t = sat.getTime() 

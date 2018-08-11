@@ -1,7 +1,8 @@
 import numpy as np
 import satellite
 import disturbance_1U as dist
-from constants_1U import  MODEL_STEP ,LINE1, LINE2, m_INERTIA, G, M_EARTH
+
+from constants_1U import v_q0_BO,v_w0_BIB, R_EARTH, ALTITUDE, DELAY_STEP
 from dynamics import x_dot
 import frames as fs
 import solver as sol
@@ -36,6 +37,7 @@ for k in range(0,len(m_light_output_temp)-1):
 		break
 
 #define simulation parameters
+
 print init,end
 t0 = m_sgp_output_temp_i[init,0]
 tf = m_sgp_output_temp_i[end,0]	#simulation time in seconds
@@ -98,10 +100,12 @@ for  i in range(0,N-1):
 	v_state_next = np.zeros((1,7))
 
 	#Use rk4 solver to calculate the state for next step
+
 	for j in range(0,int(MODEL_STEP/h)):		
 		v_state_next = sol.rk4Quaternion(Advitiy,x_dot,h)
 		Advitiy.setState(v_state_next.copy())
 		Advitiy.setTime(t0 + i*MODEL_STEP + (j+1)*h)
+
 
 	m_state[i+1,:] = v_state_next.copy()
 	
@@ -114,6 +118,7 @@ for  i in range(0,N-1):
 
 #save the data files
 os.chdir('Logs/')
+=======
 os.mkdir('polar-identity-no-dist')
 os.chdir('polar-identity-no-dist')
 np.savetxt('position.csv',m_sgp_output_i[:,1:4], delimiter=",")

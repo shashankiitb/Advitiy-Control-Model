@@ -47,20 +47,25 @@ def quatRotate(v_q,v_x): #rotates vector x by quaternion q
 	v_x2 = v_y[1:4]
 	return v_x2
 
-def quatDer1(v_q,v_w): 	# w is angular velocity of body wrt inertial frame in body frame. 
+def quatDerBI(v_q,v_w): 	# w is angular velocity of body wrt inertial frame in body frame. 
+
 						#q transforms inertial frame vector to body frame
 
 	m_W = np.array([[0.,-v_w[0],-v_w[1],-v_w[2]],[v_w[0],0.,v_w[2],-v_w[1]],[v_w[1],-v_w[2],0.,v_w[0]],[v_w[2],v_w[1],-v_w[0],0.]])
 	v_q_dot = 0.5*np.dot(m_W,v_q)
 
 	return v_q_dot
-'''
-def quatDer2(q,w): #if w is in inertial frame, q takes from body to inertial
-	W = np.array([[0,-w[0],-w[1],-w[2]],[w[0],0,-w[2],w[1]],[w[1],w[2],0,-w[0]],[w[2],-w[1],w[0],0]])
-	q_dot = 0.5*np.dot(W,q)
+
+def quatDerBO(v_q,omega1):   #q transforms orbit frame vector to body frame
+								#omega1 = v_q_BI_b + R*v_q_BO_b
+								#R is rotation matrix corresponding to v_q_BO
+	W_vector = v_q[0]*omega1+np.cross(v_q[1:4],omega1)
+	W_scalar = -np.dot(v_q[1:4],omega1)
+	W = np.hstack((W_scalar,W_vector))
+	q_dot = 0.5*W
 
 	return q_dot
-'''
+
 def rotm2quat(m_A): #returns a quaternion whose scalar part is positive to keep angle between -180 to +180 deg.
 
 	q0 = 1 + np.trace(m_A)
