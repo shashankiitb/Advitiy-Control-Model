@@ -75,7 +75,7 @@ def rotm2quat(m_A): #returns a quaternion whose scalar part is positive to keep 
 	if(qm==q4):
 		q4 = math.sqrt(q4)/2
 		q1 = (m_A[1,2] - m_A[2,1])/(4*q4)
-		q2 = (m_A[2,0] - m_A[0,2])/(4*q4)
+		q2 = (m_A[0,2] - m_A[2,0])/(4*q4)
 		q3 = (m_A[0,1] - m_A[1,0])/(4*q4)
 
 	elif(qm==q1):
