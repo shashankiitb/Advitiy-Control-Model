@@ -1,0 +1,23 @@
+Quality Assurance Report
+frames.py
+
+QA requested by: Sanskriti Bhansali  
+Date:	19/8/2018
+Reviewer: Shashank Verma
+Permanent links:	1.	
+			2.
+			3.	
+			4.
+
+QA suggestions:
+1) In lighmodel.py, I suggest to divide magnitude of v_sun_i while finding angles (theta, theta_u, theta_p) between vectors
+2) On line 40: elif (theta>= np.pi/2-beta) one add one more "and" condition (theta_u > alpha) for sake of completeness.
+3) 
+
+Implementation:
+All changes are implemented
+Post-QA permanent links:	1.
+				2.
+				3.	
+				4.
+--------------------------------------------------------------------------------------------------------------------------------
