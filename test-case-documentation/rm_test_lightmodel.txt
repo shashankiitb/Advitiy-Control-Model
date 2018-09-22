@@ -1,0 +1,6 @@
+Read Me for test_lightmodel.json
+
+Data formate - 
+time, flag(1,0,0.5), sun_vector(x,y,z), position_vector(x,y,z)
+
+For a given sun_vector taken from si_output.csv and position_vector taken from sgp_output.csv for give time. Flag is calculated accordingly to given sun_vector and position_vector. 
